@@ -1,0 +1,2280 @@
+/*ULTIMATE CHEAT SIMULATOR */
+
+import ddf.minim.*;
+import controlP5.*;
+
+ControlP5 cp5;
+AudioPlayer jcena;
+AudioPlayer fcount;
+AudioPlayer attente;
+AudioPlayer loser;
+AudioPlayer player;
+Minim minim;
+
+personnage perso = new personnage();
+personnage perso2 = new personnage();
+surveillant surv1 = new surveillant();
+surveillant surv2 = new surveillant();
+surveillant surv3= new surveillant();
+surveillant surv4 = new surveillant();
+surveillant surv5= new surveillant();
+
+PFont police;
+String[] lines;
+PImage fin1;
+PImage fin2;
+PImage fin3;
+PImage fin4;
+PImage fin5;
+PImage Niveau1;
+PImage Niveau2;
+PImage Niveau3;
+PImage salle1;
+PImage salle2;
+PImage point;
+PImage win;
+PImage imagecadenas;
+int page;
+int niveauselection;
+int k =0;
+int t =0;
+int l =0;
+color  rectcouleur= color(30, 40, 255);
+ArrayList<eleve> tab1=new ArrayList<eleve>();
+ArrayList<table> tab2=new ArrayList<table>();
+ArrayList<jauge> tab3=new ArrayList<jauge>();
+ArrayList<eleve2> tab4=new ArrayList<eleve2>();
+ArrayList<table2> tab5=new ArrayList<table2>();
+ArrayList<jauge2> tab6=new ArrayList<jauge2>();
+int timerR=0;
+int timerL=0;
+int timerU=0;
+int timerD=0;
+int collisionL=0;
+int collisionR=0;
+int collisionU=0;
+int collisionD=0;
+int aleasurv=0;
+int variablegauchesurv1;
+int variablebassurv1;
+int espace=0;
+int enter=0;
+int time=0;
+int time2=0;
+int score=0;
+int tempseleve=0;
+int nul=0;
+int varenter;
+int varenter2=0;
+int varenter3=0;
+int niveau1accueil=0;
+int imagerandom=0;
+int time3=0;
+int time3controle=0;
+int stop=0;
+int stopcontrole=0;
+float fondu=0;
+int smoothcontroleR=0;
+int smoothcontroleL=0;
+int smoothcontroleU=0;
+int smoothcontroleD=0;
+int perdu=0;
+int stopdescentejauge=0;
+String tmpDetect="";
+int persoplace=0;
+int TempsSeconde=0;
+int TempsMinute=5;
+int phrase;
+int timerphrase;
+int musique=0;
+int gg=0;
+int score1=0;
+int niveaudeux;
+int niveautrois;
+int cadenas=0;
+controlP5.Button precedent;
+controlP5.Button suivant;
+controlP5.Button start;
+controlP5.Button accueil;
+
+void setup() {
+  lines  = loadStrings("list.txt");
+  fin1 = loadImage("fin1.png");
+  fin2 = loadImage("fin2.png");
+  fin3 = loadImage("fin3.png");
+  fin4 = loadImage("fin4.png");
+  fin5 = loadImage("fin5.png");
+  Niveau1 = loadImage("NIVEAU 1.png");
+  Niveau2 = loadImage("NIVEAU 2.png");
+  Niveau3 = loadImage("NIVEAU 3.png");
+  salle1 = loadImage("salle1.png");
+  salle2 = loadImage("salle2.png");
+  point = loadImage("point.png");
+  win = loadImage("win.jpg");
+  imagecadenas = loadImage("cadenas.png");
+  fin1.resize(1000, 720);
+  fin2.resize(1000, 720);
+  fin3.resize(1000, 720);
+  fin4.resize(1000, 720);
+  fin5.resize(1000, 720);
+  win.resize(1279, 720);
+  Niveau1.resize(500, 500);
+  Niveau2.resize(500, 500);
+  Niveau3.resize(500, 500);
+  salle1.resize(1080, 720);
+  imagecadenas.resize(1279, 720);
+  point.resize(50, 50);
+  background(255);
+  size(1280, 720);
+  cp5 = new ControlP5(this);
+  minim = new Minim(this);
+  player = minim.loadFile("Mission Impossible Theme(full theme).mp3", 2048);
+  loser = minim.loadFile("the-dickhead-song.mp3");
+  attente = minim.loadFile("musique attente.mp3");
+  jcena = minim.loadFile("john cena.mp3");
+  fcount = minim.loadFile("final countdown.mp3");
+  creation();
+  page=0;
+  initialisation1();
+  initialisation2();
+}
+
+void draw() {
+  if (page==0) { //Accueil
+    accueilpage();
+  }
+  if (page==1) { //Niveau 1
+    collision();
+    niveau1();
+    collision();
+  }
+  if (page==2) {
+    niveautrois=0;
+    niveaudeux=1;
+    collision2et3();
+    niveau2et3();
+    collision2et3();
+  }
+  if (page==3) {
+    niveaudeux=0;
+    niveautrois=1;
+    collision2et3();
+    niveau2et3();
+    collision2et3();
+  }
+  if (page==4) { //Fondu
+    fondu();
+  }
+  if (page==5) { //Gagner
+    if (fondu <= 255) {
+      accueil.hide();
+      if (fondu<=10) {
+        fill(0, 0, 0, fondu);
+        noStroke();
+        rect(1000, 0, 280, 720);
+        noFill();
+        tint(255, fondu);
+        image(win, 0, 0);
+        fondu=fondu+0.1;
+      }
+      if (fondu>=10) {
+        fill(0, 0, 0, fondu);
+        noStroke();
+        rect(1000, 0, 280, 720);
+        noFill();
+        tint(255, fondu);
+        image(win, 0, 0);
+        fondu=fondu+10;
+      }
+    }
+    if (fondu>255) {
+      accueil.show();
+    }
+  }
+}
+
+void launchmusic() {
+  if (musique==0) {
+    attente.play();
+
+    if (musique==1 ) {
+
+      player.play();
+    }
+
+    if (musique==2 ) {
+
+      loser.play();
+    }
+
+    if (musique==3) {
+      jcena.play();
+    }
+
+    if (musique==4) {
+      fcount.play();
+    }
+  }
+}
+
+
+void keyPressed() {
+  if (key == CODED) {
+    if (keyCode == LEFT) {
+      if (page==1) {
+        timerL=timerL+1;
+        perso.x = perso.x-5;
+        collisionL=1;
+      }
+      if (page==2 || page==3) {
+        timerL=timerL+1;
+        perso2.x = perso2.x-5;
+        collisionL=1;
+      }
+    }
+    if (keyCode == RIGHT) {
+      if (page==1) {
+        timerR=timerR+1;
+        perso.x=perso.x+5;
+        collisionR=1;
+      }
+      if (page==2 || page==3) {
+        timerR=timerR+1;
+        perso2.x = perso2.x+5;
+        collisionR=1;
+      }
+    }
+    if (keyCode == UP) { 
+      if (page==1) {
+        timerU=timerU+1;
+        perso.y = perso.y-5;
+        collisionU=1;
+      }      
+      if (page==2 || page==3) {
+        timerU=timerU+1;
+        perso2.y = perso2.y-5;
+        collisionU=1;
+      }
+    }
+    if (keyCode == DOWN) {
+      if (page==1 ) {
+        timerD=timerD+1;
+        perso.y = perso.y+5;
+        collisionD=1;
+      }      
+      if (page==2 || page==3) {
+        timerD=timerD+1;
+        perso2.y = perso2.y+5;
+        collisionD=1;
+      }
+    }
+  }
+  if (key == 'a') {
+    if (varenter==0) {
+      enter=1;
+    }
+  }
+  if (key == ' ') {
+    espace=1;
+  }
+}
+
+void keyReleased () {
+  if (keyCode == LEFT) {
+    if (page==1) {
+      timerL=0;
+      collisionL=0;
+    }      
+    if (page==2 || page==3) {
+      timerL=0;
+      collisionL=0;
+    }
+  }
+  if (keyCode == RIGHT) {
+    if (page==1) {
+      timerR=0;
+      collisionR=0;
+    }      
+    if (page==2 || page==3) {
+      timerR=0;
+      collisionR=0;
+    }
+  }
+  if (keyCode == UP) { 
+    if (page==1) {
+      timerU=0;
+      collisionU=0;
+    }      
+    if (page==2 || page==3) {
+      timerU=0;
+      collisionU=0;
+    }
+  }
+  if (keyCode == DOWN) {
+    if (page==1) {
+      timerD=0;
+      collisionD=0;
+    }      
+    if (page==2 || page==3) {
+      timerD=0;
+      collisionD=0;
+    }
+  }
+  if (key == ' ') {
+    espace=0;
+  }
+}
+
+
+void stopmusic1()
+{
+  if (musique==0) {
+    attente.play();
+    player.rewind();
+    player.pause();
+    loser.rewind();
+    loser.pause(); 
+    jcena.rewind();
+    jcena.pause();
+    fcount.rewind();
+    fcount.pause();
+  }
+  if (musique==1) {
+    player.play();
+    loser.rewind();
+    loser.pause();
+    attente.rewind();
+    attente.pause();
+    jcena.rewind();
+    jcena.pause();
+    fcount.rewind();
+    fcount.pause();
+  }
+  if (musique==2) {
+    loser.play();
+    player.rewind();
+    player.pause();
+    attente.rewind();
+    attente.pause();
+    jcena.rewind();
+    jcena.pause();
+    fcount.rewind();
+    fcount.pause();
+  }
+  if (musique==3) {
+    jcena.play();
+    fcount.rewind();
+    fcount.pause();
+    loser.rewind();
+    loser.pause();
+    player.rewind();
+    player.pause();
+    attente.rewind();
+    attente.pause();
+  }
+  if (musique==4) {
+    fcount.play();
+    jcena.rewind();
+    jcena.pause();
+    loser.rewind();
+    loser.pause();
+    player.rewind();
+    player.pause();
+    attente.rewind();
+    attente.pause();
+  }
+}
+class eleve {
+  float x=200;
+  float y=200;
+  int type=0;
+  color couleur=0;
+  color couleur2=0;
+  int triche=0;
+}
+// type: 2= Bon élève, 3 Moyen élève, 4 mauvais élève, 5 fayot, 6 place libre
+
+class personnage {
+  float x=538;
+  float y=428;
+  float Vx=0;
+  float Vy=0;
+}
+
+class surveillant {
+  float x=475;
+  float y=100;
+  float Vx=0;
+  float Vy=0;
+  int direction=2;
+}
+
+class jauge {
+  float x=100;
+  float y=100;
+  float xjauge=0;
+  color c=color(64, 255, 12);
+  float time=0;
+}
+
+class jauge2 {
+  float x=100;
+  float y=100;
+  float xjauge2=0;
+  color c=color(64, 255, 12);
+  float time=0;
+}
+
+class table {
+  float x=200;
+  float y=200;
+  color c=color(64, 45, 12);
+}
+
+class personnage2 {
+  float x=492;
+  float y=330;
+  float Vx=0;
+  float Vy=0;
+}
+
+class eleve2 {
+  float x=200;
+  float y=200;
+  int type=0;
+  color couleur=0;
+  color couleur2=0;
+  int triche=0;
+}
+
+class table2 {
+  float x=200;
+  float y=200;
+  color c=color(64, 45, 12);
+}
+//Fondu
+void fondu() {
+
+  if (imagerandom==1) {
+    if (fondu <= 255) {
+      accueil.hide();
+      if (fondu<=10) {
+        fill(0, 0, 0, fondu);
+        noStroke();
+        rect(1000, 0, 280, 720);
+        noFill();
+        tint(255, fondu);
+        image(fin1, 0, 0);
+        fondu=fondu+0.1;
+      }
+      if (fondu>=10) {
+        fill(0, 0, 0, fondu);
+        noStroke();
+        rect(1000, 0, 280, 720);
+        noFill();
+        tint(255, fondu);
+        image(fin1, 0, 0);
+        fondu=fondu+10;
+      }
+    }
+  }
+  if (imagerandom==2) {
+    if (fondu <= 255) {
+      if (fondu<=10) {
+        fill(0, 0, 0, fondu);
+        noStroke();
+        rect(1000, 0, 280, 720);
+        noFill();
+        tint(255, fondu);
+        image(fin2, 0, 0);
+        fondu=fondu+0.1;
+      }
+      if (fondu>=10) {
+        fill(0, 0, 0, fondu);
+        noStroke();
+        rect(1000, 0, 280, 720);
+        noFill();
+        tint(255, fondu);
+        image(fin2, 0, 0);
+        fondu=fondu+10;
+      }
+    }
+  }
+  if (imagerandom==3) {
+    if (fondu <= 255) {
+      if (fondu<=10) {
+        fill(0, 0, 0, fondu);
+        noStroke();
+        rect(1000, 0, 280, 720);
+        noFill();
+        tint(255, fondu);
+        image(fin3, 0, 0);
+        fondu=fondu+0.1;
+      }
+      if (fondu>=10) {
+        fill(0, 0, 0, fondu);
+        noStroke();
+        rect(1000, 0, 280, 720);
+        noFill();
+        tint(255, fondu);
+        image(fin3, 0, 0);
+        fondu=fondu+10;
+      }
+    }
+  }
+  if (imagerandom==4) {
+    if (fondu <= 255) {
+      if (fondu<=10) {
+        fill(0, 0, 0, fondu);
+        noStroke();
+        rect(1000, 0, 280, 720);
+        noFill();
+        tint(255, fondu);
+        image(fin4, 0, 0);
+        fondu=fondu+0.1;
+      }
+      if (fondu>=10) {
+        fill(0, 0, 0, fondu);
+        noStroke();
+        rect(1000, 0, 280, 720);
+        noFill();
+        tint(255, fondu);
+        image(fin4, 0, 0);
+        fondu=fondu+10;
+      }
+    }
+  }
+  if (imagerandom==5) {
+    if (fondu <= 255) {
+      if (fondu<=10) {
+        fill(0, 0, 0, fondu);
+        noStroke();
+        rect(1000, 0, 280, 720);
+        noFill();
+        tint(255, fondu);
+        image(fin5, 0, 0);
+        fondu=fondu+0.1;
+      }
+      if (fondu>=10) {
+        fill(0, 0, 0, fondu);
+        noStroke();
+        rect(1000, 0, 280, 720);
+        noFill();
+        tint(255, fondu);
+        image(fin5, 0, 0);
+        fondu=fondu+10;
+      }
+    }
+  }
+
+  if (fondu>255) {
+    accueil.show();
+  }
+}
+void accueilpage() {
+  fill(255);
+  musique=0;
+  stopmusic1();
+  launchmusic();
+  precedent.show();
+  suivant.show();
+  start.show();
+  accueil.hide();
+  // fondu=255;
+    if (niveauselection==0) {
+    background(0);
+    textSize(16);
+    text("Niveau 1", 620, 360);
+    textSize(30);
+    text("Projet de fin d'année", 520, 50);
+    image(Niveau1, 400, 90);
+  }
+  
+  if (niveauselection==1 && cadenas>=1) {
+    background(0);
+    textSize(16);
+    text("Niveau 2", 620, 360);
+    textSize(30);
+    text("Projet de fin d'année", 520, 50);
+    image(Niveau2, 400, 90);
+  }
+  if (niveauselection==1 && cadenas<=0) {
+    background(0);
+    textSize(16);
+    text("Niveau 2", 620, 360);
+    textSize(30);
+    text("Projet de fin d'année", 520, 50);
+    image(Niveau2, 400, 90);
+    image(imagecadenas, 0, 0);
+    start.hide();
+  }
+  if (niveauselection==2 && cadenas>=2) {
+    background(0);
+    textSize(16);
+    text("Niveau 3", 620, 360);
+    textSize(30);
+    text("Projet de fin d'année", 520, 50);
+    image(Niveau3, 400, 90);
+  }
+  if (niveauselection==2 && cadenas<=1) {
+    background(0);
+    textSize(16);
+    text("Niveau 3", 620, 360);
+    textSize(30);
+    text("Projet de fin d'année", 520, 50);
+    image(Niveau3, 400, 90);
+    image(imagecadenas, 0, 0);
+    start.hide();
+  }
+}
+void creation() {
+
+  precedent=cp5.addButton("precedent")
+    .setPosition(0, 360)
+    .setSize(100, 100)
+    ;
+  suivant=cp5.addButton("suivant")
+    .setPosition(1180, 360)
+    .setSize(100, 100)
+    ;
+  start=cp5.addButton("start")
+    .setPosition(590, 620)
+    .setSize(100, 100)
+    ;
+  accueil=cp5.addButton("accueil")
+    .setPosition(1080, 0)
+    .setSize(200, 100)
+    ;
+}
+
+void precedent() {
+  niveauselection--;
+  if (niveauselection<0) {
+    niveauselection=0;
+  }
+}
+
+void suivant() {
+  niveauselection++;
+  if (niveauselection>2) {
+    niveauselection=2;
+  }
+}
+
+void start() {
+  if (niveauselection==0) {
+    page=1;
+  }
+  if (niveauselection==1) {
+    page=2;
+  }
+  if (niveauselection==2) {
+    page=3;
+  }
+}
+
+
+void accueil() {
+  if (niveau1accueil==1) {
+    accueilpage();
+    perso.x=538;
+    perso.y=428;
+    surv1.x=475;
+    surv1.y=100;
+    page=0;
+    k =0;
+    t =0;
+    l =0;
+    rectcouleur= color(30, 40, 255);
+    timerR=0;
+    timerL=0;
+    timerU=0;
+    timerD=0;
+    collisionL=0;
+    collisionR=0;
+    collisionU=0;
+    collisionD=0;
+    aleasurv=0;
+    variablegauchesurv1=0;
+    variablebassurv1=0;
+    espace=0;
+    enter=0;
+    time=0;
+    time2=0;
+    score=0;
+    tempseleve=0;
+    nul=0;
+    varenter=0;
+    varenter2=0;
+    varenter3=0;
+    imagerandom=0;
+    time3=0;
+    time3controle=0;
+    stop=0;
+    stopcontrole=0;
+    fondu=0;
+    smoothcontroleR=0;
+    perdu=0;
+    persoplace=0;
+    TempsSeconde=0;
+    TempsMinute=0;
+    phrase=0;
+    score1=0;
+    for (int i=0; i<20; i++) {
+      tab3.get(i).xjauge=0;
+    }
+    for (int i=0; i<20; i++) {
+      tab6.get(i).xjauge2=0;
+    }
+  }
+  niveau1accueil=0;
+  initialisation1();
+  initialisation2();
+}
+void collision() {
+  //Collision table
+  for (int i=0; i<20; i++) {
+    if (perso.x > tab2.get(i).x-25 && perso.x <tab2.get(i).x+75 && (perso.y == tab2.get(i).y+24 || perso.y == tab2.get(i).y+23 || perso.y == tab2.get(i).y+20) ) {
+      perso.y=tab2.get(i).y+25;
+    }
+  }
+  for (int i=0; i<20; i++) {
+    if (perso.x > tab2.get(i).x-25 && perso.x <tab2.get(i).x+75 && (perso.y == tab2.get(i).y-23 ||perso.y == tab2.get(i).y-20) ) {
+      perso.y=tab2.get(i).y-25;
+    }
+  }
+  for (int i=0; i<20; i++) {
+    if (perso.x == tab2.get(i).x+27 && perso.y > tab2.get(i).y-25 && perso.y<tab2.get(i).y+25) {
+      perso.x=tab2.get(i).x-25;
+    }
+  }
+  for (int i=0; i<20; i++) {
+    if (perso.x == tab2.get(i).x+73 && perso.y > tab2.get(i).y-25 && perso.y<tab2.get(i).y+25) {
+      perso.x=tab2.get(i).x+75;
+    }
+  }
+  if (collisionR==1) {
+    for (int i=0; i<20; i++) {
+      if (perso.x > tab2.get(i).x-25 && perso.x <tab2.get(i).x+75 && perso.y > tab2.get(i).y-25 && perso.y<tab2.get(i).y+25) {
+        perso.x=tab2.get(i).x-25;
+      }
+    }
+  }
+  if (collisionL==1) {
+    for (int i=0; i<20; i++) {
+      if (perso.x > tab2.get(i).x-25 && perso.x <tab2.get(i).x+75 && perso.y > tab2.get(i).y-25 && perso.y<tab2.get(i).y+25) {
+        perso.x=tab2.get(i).x+75;
+      }
+    }
+  }
+  if (collisionU==1) {
+    for (int i=0; i<20; i++) {
+      if (perso.x > tab2.get(i).x-25 && perso.x <tab2.get(i).x+75 && perso.y > tab2.get(i).y-25 && perso.y<tab2.get(i).y+25) {
+        perso.y=tab2.get(i).y+25;
+      }
+    }
+  }
+  if (collisionD==1) {
+    for (int i=0; i<20; i++) {
+      if (perso.x > tab2.get(i).x-25 && perso.x <tab2.get(i).x+75 && perso.y > tab2.get(i).y-25 && perso.y<tab2.get(i).y+25) {
+        perso.y=tab2.get(i).y-25;
+      }
+    }
+  }
+  // Collision bords
+
+  if (perso.x<0) {
+    perso.x=0;
+  }
+  if (perso.x>1055) {
+    perso.x=1055;
+  }
+  if (perso.y>695) {
+    perso.y=695;
+  }
+  if (perso.y<0) {
+    perso.y=0;
+  }
+}
+void collision2et3() {
+  //Collision table
+  for (int i=0; i<48; i++) {
+    if (perso2.x > tab5.get(i).x-20 && perso2.x <tab5.get(i).x+60 && (perso2.y == tab5.get(i).y+19 || perso2.y == tab5.get(i).y+18 || perso2.y == tab5.get(i).y+17 || perso2.y == tab5.get(i).y+16 || perso2.y == tab5.get(i).y+15 ) ) {//Bas
+      perso2.y=tab5.get(i).y+20;
+    }
+  }
+  for (int i=0; i<48; i++) {
+    if (perso2.x > tab5.get(i).x-20 && perso2.x <tab5.get(i).x+60 && (perso2.y == tab5.get(i).y-10 ||perso2.y == tab5.get(i).y-11 ||perso2.y == tab5.get(i).y-12 ||perso2.y == tab5.get(i).y-13 ||perso2.y == tab5.get(i).y-14||perso2.y == tab5.get(i).y-15 || perso2.y == tab5.get(i).y-18 || perso2.y == tab5.get(i).y-19) ) {//Haut
+      perso2.y=tab5.get(i).y-20;
+    }
+  }
+  for (int i=0; i<48; i++) {
+    if (perso2.x == tab5.get(i).x+22 && perso2.y > tab5.get(i).y-20 && perso2.y<tab5.get(i).y+20) {//Gauche
+      perso2.x=tab5.get(i).x-20;
+    }
+  }
+  for (int i=0; i<48; i++) {
+    if (perso2.x == tab5.get(i).x+58 && perso2.y > tab5.get(i).y-20 && perso2.y<tab5.get(i).y+20) {//Droite
+      perso2.x=tab5.get(i).x+60;
+    }
+  }
+  if (collisionR==1) {
+    for (int i=0; i<48; i++) {
+      if (perso2.x > tab5.get(i).x-20 && perso2.x <tab5.get(i).x+60 && perso2.y > tab5.get(i).y-20 && perso2.y<tab5.get(i).y+20) {
+        perso2.x=tab5.get(i).x-20;
+      }
+    }
+  }
+  if (collisionL==1) {
+    for (int i=0; i<48; i++) {
+      if (perso2.x > tab5.get(i).x-20 && perso2.x <tab5.get(i).x+60 && perso2.y > tab5.get(i).y-20 && perso2.y<tab5.get(i).y+20) {
+        perso2.x=tab5.get(i).x+60;
+      }
+    }
+  }
+  if (collisionU==1) {
+    for (int i=0; i<48; i++) {
+      if (perso2.x > tab5.get(i).x-20 && perso2.x <tab5.get(i).x+60 && perso2.y > tab5.get(i).y-20 && perso2.y<tab5.get(i).y+20) {
+        perso2.y=tab5.get(i).y+20;
+      }
+    }
+  }
+  if (collisionD==1) {
+    for (int i=0; i<48; i++) {
+      if (perso2.x > tab5.get(i).x-20 && perso2.x <tab5.get(i).x+60 && perso2.y > tab5.get(i).y-20 && perso2.y<tab5.get(i).y+20) {
+        perso2.y=tab5.get(i).y-20;
+      }
+    }
+  }
+  // Collision bords
+
+  if (perso2.x<0) {
+    perso2.x=0;
+  }
+  if (perso2.x>1055) {
+    perso2.x=1060;
+  }
+  if (perso2.y>695) {
+    perso2.y=700;
+  }
+  if (perso2.y<0) {
+    perso2.y=0;
+  }
+}
+void initialisation1() {
+  for (int i=0; i<5; i++) {
+    for (int j=0; j<4; j++) {
+      background(255);
+
+      tab1.add(new eleve());
+      tab1.get(k).type=(int) random(2, 6);
+      tab1.get(k).x= 250+i*150;
+      tab1.get(k).y= 200+j*120;
+      if (tab1.get(k).type==2) tab1.get(k).couleur=color(255, 255, 0);
+      if (tab1.get(k).type==3) tab1.get(k).couleur=color(0, 255, 0);
+      if (tab1.get(k).type==4) tab1.get(k).couleur=color(255, 0, 0);
+      if (tab1.get(k).type==5) tab1.get(k).couleur=color(0, 0, 255);
+      if (k==10) {
+        tab1.get(k).type=6;
+      }
+      k++;
+    }
+  }
+  for (int i=0; i<5; i++) {
+    for (int j=0; j<4; j++) {
+      background(255);
+
+      tab2.add(new table());
+      tab2.get(t).x= 213+i*150;
+      tab2.get(t).y= 163+j*120;
+      t++;
+    }
+  }
+  for (int i=0; i<5; i++) {
+    for (int j=0; j<4; j++) {
+      background(255);
+
+      tab3.add(new jauge());
+      tab3.get(l).x= 213+i*150;
+      tab3.get(l).y= 163+j*120;
+      l++;
+    }
+  }
+  k=0;
+  t=0;
+  l=0;
+  aleasurv=(int) random(1, 5);
+
+  stroke(0);
+  imagerandom=(int) random(1, 6);
+  surv1.x=475;
+  surv1.y=100;
+  surv1.direction=2;
+}
+void niveau1() {
+  musique=1;
+  stopmusic1();
+  launchmusic();
+  if (stop==0) {
+    //Avancé smooth
+    if (timerR==1) {
+      perso.x = perso.x+2;
+    }
+    if (timerL==1) {
+      perso.x = perso.x-2;
+    }
+    if (timerU==1) {
+      perso.y = perso.y-2;
+    }
+    if (timerD==1) {
+      perso.y = perso.y+2;
+    }
+    //Boutons
+    precedent.hide();
+    suivant.hide();
+    start.hide();
+    accueil.show();
+
+    //Détection triangle/perso
+    pushStyle();
+    fill(0, 220, 200);
+    rect(0, 0, 1080, 720);
+    popStyle();
+
+    if (surv1.direction==1) {
+      fill(255);
+      triangle(surv1.x, surv1.y, surv1.x-100, surv1.y-200, surv1.x+100, surv1.y-200);
+      tmpDetect=hex(color(get(int(surv1.x), int(surv1.y-100))), 6);
+    }
+    if (surv1.direction==2) {
+
+      fill(255);
+      triangle(surv1.x, surv1.y, surv1.x-100, surv1.y+200, surv1.x+100, surv1.y+200);
+      tmpDetect=hex(color(get(int(surv1.x), int(surv1.y+100))), 6);
+    }
+    if (surv1.direction==3) {
+      fill(255);
+      triangle(surv1.x, surv1.y, surv1.x+200, surv1.y-100, surv1.x+200, surv1.y+100);
+      tmpDetect=hex(color(get(int(surv1.x+100), int(surv1.y))), 6);
+    }
+    if (surv1.direction==4) {
+      fill(255);
+      triangle(surv1.x, surv1.y, surv1.x-200, surv1.y-100, surv1.x-200, surv1.y+100);
+      tmpDetect=hex(color(get(int(surv1.x-100), int(surv1.y))), 6);
+    }
+    fill(0);
+    //Place de l'élève
+    if ((perso.x >= 513-25 && perso.x <= 588) && (perso.y >= 403-25 && perso.y <= 488)) {
+      persoplace=1;
+    } else {
+      persoplace=0;
+    }
+    if (persoplace !=1) {
+      for (int i=int(perso.x); i<int(perso.x)+25; i++) {
+        String detectPerso=hex(color((get(i, (int) perso.y))), 6);
+
+        if (detectPerso.equals(tmpDetect)) {
+          nul=1;
+        }
+      }
+    }
+    //Tableaux
+    image(salle1, 0, 0);
+    fill(0, 255, 0, 50);
+    rect(perso.x-40, perso.y-40, 105, 105);
+
+    for (int i=0; i<5; i++) {
+      for (int j=0; j<4; j++) {
+
+        fill(tab1.get(k).couleur);
+        if (tab1.get(k).type<6) {
+          ellipse(tab1.get(k).x, tab1.get(k).y, 25, 25);
+          if (time==300) {
+            tab1.get(k).couleur=color(random(255), random(255), random(255));
+          }
+        }
+        k++;
+      }
+    }
+    for (int i=0; i<5; i++) {
+      for (int j=0; j<4; j++) {
+
+        fill(tab2.get(t).c);
+        rect(tab2.get(t).x, tab2.get(t).y, 75, 25);
+        t++;
+      }
+    }
+    //Jauge qui monte
+    for (int i=0; i<5; i++) {
+      for (int j=0; j<4; j++) {
+        fill(255, 0, 0);
+
+        rect(tab3.get(l).x, tab3.get(l).y, tab3.get(l).xjauge, 6);
+        l++;
+      }
+    }
+
+    //Jauge qui descend
+    for (int i=0; i<20; i++) {
+
+      if (tab3.get(i).time>=300 && tab3.get(i).xjauge>0) {
+
+        tab3.get(i).xjauge--;
+        if (tab3.get(i).xjauge==0) {
+          tab3.get(i).time=0;
+          tab1.get(i).triche=0;
+        }
+      }
+    }
+
+    t=0;
+    l=0;
+    k=0;
+
+    fill(0);
+    rect(perso.x, perso.y, 25, 25);
+    noFill();
+    rect(513, 403, 75, 75);
+    fill(255);
+    ellipse(surv1.x, surv1.y, 25, 25);
+    if (surv3.direction==1) {//Vers le haut
+      surv2.y=surv2.y-1;
+    }
+    if (surv2.direction==2) {//Vers le bas
+      surv2.y=surv2.y+1;
+    }
+    if (surv2.direction==3) {//Vers la droite
+      surv2.x=surv2.x+1;
+    }
+    if (surv2.direction==4) {//Vers la gauche
+      if (surv2.y != 620) {
+        surv2.x=surv2.x-1;
+      }
+    }
+    //surv2 déplacement intérieur
+    if ((surv2.x== 227 || surv2.x==337 || surv2.x==447 || surv2.x==557 || surv2.x==667 || surv2.x==777 || surv2.x==887) && (surv2.y==170 || surv2.y==270 || surv2.y==370 || surv2.y==470 || surv2.y==570)) {
+      surv2.direction=(int) random(1, 5);
+    }
+    //surv2 déplacement coin
+    if (surv2.x==117 && surv2.y==70) {//En haut a gauche
+      int i=(int) random(0, 2);
+      if (i == 0) {
+        surv2.direction=3;
+      }
+      if (i == 1) {
+        surv2.direction=2;
+      }
+    }
+
+    if (surv2.x==997 && surv2.y==70) {// En haut a droite
+      int i=(int) random(0, 2);
+      if (i == 0) {
+        surv2.direction=4;
+      }
+      if (i == 1) {
+        surv2.direction=2;
+      }
+    }
+    if (surv2.x==117 && surv2.y==670) {//En bas à gauche
+      int i=(int) random(0, 2);
+      if (i == 0) {
+        surv2.direction=3;
+      }
+      if (i == 1) {
+        surv2.direction=1;
+      }
+    }
+    if (surv2.x==997 && surv2.y==670) {// En bas à droite
+      int i=(int) random(0, 2);
+      if (i == 0) {
+        surv2.direction=1;
+      }
+      if (i == 1) {
+        surv2.direction=4;
+      }
+    }
+    //surv2 déplacement bords
+    if (surv2.x==117 && (surv2.y==170 || surv2.y==270 || surv2.y==370 || surv2.y==470 || surv2.y==570 )) {//Gauche
+      surv2.direction=(int) random(1, 4);
+    }
+    if (surv2.x==997 && (surv2.y==170 || surv2.y==270 || surv2.y==370 || surv2.y==470 || surv2.y==570 )) {//Droite
+
+      int i=(int) random(1, 4);
+      if (i== 1) {
+        surv2.direction=1;
+      }
+      if (i == 2) {
+        surv2.direction=2;
+      }
+      if (i == 3) {
+        surv2.direction=4;
+      }
+    }
+    if (surv2.y==70 && (surv2.x==227 || surv2.x== 337 || surv2.x==447 || surv2.x==557 || surv2.x==667 || surv2.x==777 || surv2.x==887)) {//Haut
+      surv2.direction=(int) random(2, 4);
+    }
+    if (surv2.y==670 && (surv2.x==227 || surv2.x== 337 || surv2.x==447 || surv2.x==557 || surv2.x==667 || surv2.x==777 || surv2.x==887)) {//Bas
+      int i=(int) random(1, 4);
+      if (i == 1) {
+        surv2.direction=1;
+      }
+      if (i == 2) {
+        surv2.direction=3;
+      }
+      if (i == 3) {
+        surv2.direction=4;
+      }
+    }
+
+    //Surv1 déplacement
+    if (surv1.direction==1) {
+      surv1.y=surv1.y-1;
+    }
+    if (surv1.direction==2) {
+      surv1.y=surv1.y+1;
+    }
+    if (surv1.direction==3) {
+      surv1.x=surv1.x+1;
+    }
+    if (surv1.direction==4) {
+      if (surv1.y != 620) {
+        surv1.x=surv1.x-1;
+      }
+    }
+    //Surv1 déplacement intérieur
+    if ((surv1.x==325 || surv1.x== 475 || surv1.x==625 || surv1.x==775) && (surv1.y==260 || surv1.y==380 || surv1.y==500)) {
+      surv1.direction=(int) random(1, 5);
+    }
+    //Surv1 déplacement coin
+    if (surv1.x==175 && surv1.y==140) {
+      int i=(int) random(0, 2);
+      if (i == 0) {
+        surv1.direction=3;
+      }
+      if (i == 1) {
+        surv1.direction=2;
+      }
+    }
+
+    if (surv1.x==925 && surv1.y==140) {
+      int i=(int) random(0, 2);
+      if (i == 0) {
+        surv1.direction=4;
+      }
+      if (i == 1) {
+        surv1.direction=2;
+      }
+    }
+    if (surv1.x==175 && surv1.y==620) {
+      int i=(int) random(0, 2);
+      if (i == 0) {
+        surv1.direction=3;
+      }
+      if (i == 1) {
+        surv1.direction=1;
+      }
+    }
+    if (surv1.x==925 && surv1.y==620) {
+      int i=(int) random(0, 2);
+      if (i == 0) {
+        surv1.direction=1;
+      }
+      if (i == 1) {
+        surv1.direction=4;
+      }
+    }
+    //Surv1 déplacement bords
+    if (surv1.x==175 && (surv1.y==260 || surv1.y==380 || surv1.y==500)) {
+      surv1.direction=(int) random(1, 4);
+    }
+    if (surv1.x==925 && (surv1.y==260 || surv1.y==380 || surv1.y==500)) {
+
+      int i=(int) random(1, 4);
+      if (i== 1) {
+        surv1.direction=1;
+      }
+      if (i == 2) {
+        surv1.direction=2;
+      }
+      if (i == 3) {
+        surv1.direction=4;
+      }
+    }
+    if (surv1.y==140 && (surv1.x==325 || surv1.x== 475 || surv1.x==625 || surv1.x==775)) {
+      surv1.direction=(int) random(2, 4);
+    }
+    if (surv1.y==620 && (surv1.x==325 || surv1.x== 475 || surv1.x==625 || surv1.x==775)) {
+      int i=(int) random(1, 4);
+      if (i == 1) {
+        surv1.direction=1;
+      }
+      if (i == 2) {
+        surv1.direction=3;
+      }
+      if (i == 3) {
+        surv1.direction=4;
+      }
+    }
+
+    //Triangle surv1
+    if (surv1.direction==1) {
+      fill(255, 0, 0, 150);
+      triangle(surv1.x, surv1.y, surv1.x-100, surv1.y-200, surv1.x+100, surv1.y-200);
+    }
+    if (surv1.direction==2) {
+      fill(255, 0, 0, 150);
+      triangle(surv1.x, surv1.y, surv1.x-100, surv1.y+200, surv1.x+100, surv1.y+200);
+    }
+    if (surv1.direction==3) {
+      fill(255, 0, 0, 150);
+      triangle(surv1.x, surv1.y, surv1.x+200, surv1.y-100, surv1.x+200, surv1.y+100);
+    }
+    if (surv1.direction==4) {
+      fill(255, 0, 0, 150);
+      triangle(surv1.x, surv1.y, surv1.x-200, surv1.y-100, surv1.x-200, surv1.y+100);
+    }
+
+    time++;
+
+    //Jauge de triche
+    for (int k=0; k<20; k++) {
+      if (tab1.get(k).x>perso.x-40 && tab1.get(k).x<perso.x+65 && tab1.get(k).y>perso.y-40 && tab1.get(k).y<perso.y+65 && espace==1 && k!=10) { 
+        tempseleve++;
+        if (tab1.get(k).type !=5) {
+          tab3.get(k).xjauge=tab3.get(k).xjauge+0.5;
+        }
+        if (tab1.get(k).type ==5) {
+          tab3.get(k).xjauge=tab3.get(k).xjauge+5;
+          image(point, tab3.get(k).x+12, tab3.get(k).y-50);
+        }
+      }
+    }
+    for (int i=0; i<20; i++) {
+      if (tab3.get(i).xjauge >= 75) {
+        tab3.get(i).xjauge=75;
+
+        if (tab3.get(i).xjauge > 0) {
+          tab3.get(i).time++;
+        }
+        if (tab1.get(i).triche == 0) {
+          tab1.get(i).triche=1;
+        }
+      }
+    }
+    //Points en fonction du type
+    for (int i=0; i<20; i++) {
+      if (tab3.get(i).xjauge==75 && tab1.get(i).type==2 && tab1.get(i).triche==1) { //Moyen élève +3
+        score=score+3;
+        tab1.get(i).triche=2;
+      }
+    }
+    for (int i=0; i<20; i++) {
+      if (tab3.get(i).xjauge==75 && tab1.get(i).type==3 && tab1.get(i).triche==1) { //Bon élève +5
+
+        score=score+5;
+        tab1.get(i).triche=2;
+      }
+    }
+    for (int i=0; i<20; i++) {
+      if (tab3.get(i).xjauge==75 && tab1.get(i).type==4 && tab1.get(i).triche==1) { //Mauvais élève -2
+
+        score=score-2;
+        tab1.get(i).triche=2;
+      }
+    }
+    for (int i=0; i<20; i++) {
+      if (tab3.get(i).xjauge==75 && tab1.get(i).type==5 && tab1.get(i).triche==1) { //Fayot
+        nul=1;
+      }
+    }
+
+
+    //Touche pour tricher 
+    if (varenter3==1 && time <=300) {
+      fill(255);
+      text("Veuillez atteindre plus longtemps pour utiliser cette capacité", 125, 680);
+    }
+    if (enter==1) {
+      if (time<=300) {
+        varenter3=1;
+      }
+      if (time>300) {
+        varenter=1;//On commence time2
+        for (int k=0; k<20; k++) {
+          tab1.get(k).couleur2=tab1.get(k).couleur;
+
+          if (time2<300) {
+            if (tab1.get(k).type==2) tab1.get(k).couleur=color(255, 255, 0);
+            if (tab1.get(k).type==3) tab1.get(k).couleur=color(0, 255, 0);
+            if (tab1.get(k).type==4) tab1.get(k).couleur=color(255, 0, 0);
+            if (tab1.get(k).type==5) tab1.get(k).couleur=color(0, 0, 255);
+          }
+        }
+      }
+      enter=0;
+    }
+
+    if (varenter==1) {
+      time2++;
+    }
+
+    if (time2>300 && varenter2==0) {
+      for (int k=0; k<20; k++) {
+        tab1.get(k).couleur=tab1.get(k).couleur2;
+      }
+      varenter2++;
+    }
+
+
+    niveau1accueil=1;
+    TempsSeconde=TempsSeconde-1;
+    if (TempsSeconde==-50) {//Si temps descend en dessous de 0 alors on perd une minute et les secondes sont égales à 60
+      TempsMinute--;
+      TempsSeconde=3600;
+    }
+    if (TempsSeconde==0 && TempsMinute==0) {//Si le temps est égal à 0 minutes et 0 secondes
+      nul=1;      //Alors le joueur perd
+    }
+    fill(0, 45, 90); // Couleur des boutons
+    rect(1079, 0, 200, 720); // Rectangle de droite
+    fill(255);
+    //Temps
+    text("Temps:", 1100, 600);
+    text(TempsMinute, 1100, 650);//Minutes
+    text(":", 1130, 650);
+    text(TempsSeconde/60, 1150, 650);//Secondes
+
+    //Score texte
+    text("Score:", 1100, 450);
+    text(score, 1100, 490);
+    text("/50", 1150, 490);
+    //Score barre
+    noFill();
+    rect(1100, 500, 160, 50);
+    fill(255, 255, 0);
+    rect(1100, 500, score*3.2, 50);
+
+    //Phrase surv1
+    police = loadFont("SansSerif-18.vlw");
+    textFont(police);
+    if (timerphrase<=300) {
+      fill(255);
+      text(lines[phrase], surv1.x-(lines[phrase].length()/2)*9, surv1.y-20);
+      timerphrase++;
+    } else {
+      phrase=(int)random(0, lines.length);
+      timerphrase=0;
+    }
+  }// Fin du stop
+
+  if (score>=50) {
+    gg=1;
+    time3controle=1;
+    cadenas=1;
+    page=5;
+    stop=1;
+    musique=3;
+    accueil.hide();
+    stopmusic1();
+    if (time3>=100) {
+      page=5;
+    }
+  }
+
+  if (score<0) {
+    score=0;
+  }
+  //Game over
+  if (time3controle==1) {
+    time3++;
+  }
+  if (nul==1) {
+
+    time3controle=1;
+    musique=2;
+    stop=1;
+    perdu=1;
+    accueil.hide();
+    stopmusic1();
+
+    if (time3>=100) {
+      page=4;
+    }
+  }
+}
+void initialisation2() {
+  for (int i=0; i<8; i++) {
+    for (int j=0; j<6; j++) {
+      background(255);
+
+      tab5.add(new table2());
+      tab5.get(t).x= 142+i*110;
+      tab5.get(t).y= 110+j*100;
+      t++;
+    }
+  }
+  for (int i=0; i<8; i++) {
+    for (int j=0; j<6; j++) {
+      background(255);
+
+      tab4.add(new eleve2());
+      tab4.get(k).type=(int) random(2, 6);
+      tab4.get(k).x= 172+i*110;
+      tab4.get(k).y= 142+j*100;
+      if (tab4.get(k).type==2) tab4.get(k).couleur=color(255, 255, 0);
+      if (tab4.get(k).type==3) tab4.get(k).couleur=color(0, 255, 0);
+      if (tab4.get(k).type==4) tab4.get(k).couleur=color(255, 0, 0);
+      if (tab4.get(k).type==5) tab4.get(k).couleur=color(0, 0, 255);
+      if (k==20) {
+        tab4.get(k).type=6;
+      }
+      k++;
+    }
+  }
+  for (int i=0; i<8; i++) {
+    for (int j=0; j<6; j++) {
+      background(255);
+
+      tab6.add(new jauge2());
+      tab6.get(l).x= 142+i*110;
+      tab6.get(l).y= 110+j*100;
+      l++;
+    }
+  }
+  k=0;
+  l=0;
+  t=0;
+  perso2.x=492;
+  perso2.y=330;
+  surv2.x=557;
+  surv2.y=50;
+  surv2.direction=2;
+  surv3.x=557;
+  surv3.y=730;
+  surv3.direction=1;
+  surv4.x=50;
+  surv4.y=370;
+  surv4.direction=3;
+  surv5.x=1030;
+  surv5.y=370;
+  surv5.direction=4;
+}
+
+
+
+void niveau2et3() {
+  if (stop==0) {//Quand on perd stop passe a un et le niveau est figé
+    if (niveaudeux==1) {
+      musique=1;
+      stopmusic1();
+      launchmusic();
+    }
+    if (niveautrois==1) {
+      musique=4;
+      stopmusic1();
+      launchmusic();
+    }
+    if (timerR==1) {
+      perso2.x = perso2.x+2;
+    }
+    if (timerL==1) {
+      perso2.x = perso2.x-2;
+    }
+    if (timerU==1) {
+      perso2.y = perso2.y-2;
+    }
+    if (timerD==1) {
+      perso2.y = perso2.y+2;
+    }
+
+    surveillantdetection();
+
+
+    precedent.hide();
+    suivant.hide();
+    start.hide();
+    accueil.show();
+    fill(rectcouleur);
+    image(salle2, 0, 0);
+    rect(1080, 0, 200, 720);
+
+    for (int i=0; i<8; i++) {//Affichage des tables
+      for (int j=0; j<6; j++) {
+
+        fill(tab5.get(t).c);
+        rect(tab5.get(t).x, tab5.get(t).y, 60, 20 );
+        t++;
+      }
+    }
+
+    t=0;
+    for (int i=0; i<8; i++) {//Affichage des élèves
+      for (int j=0; j<6; j++) {
+        fill(tab4.get(k).couleur);
+        if (tab4.get(k).type<6) {
+          ellipse(tab4.get(k).x, tab4.get(k).y, 20, 20);//Elèves
+          if (time==300) {//Quand time arrive à 300 la couleur devient aléatoire
+            tab4.get(k).couleur=color(random(255), random(255), random(255));
+          }
+        }
+        k++;
+      }
+    }
+
+
+    //Jauge
+    for (int i=0; i<8; i++) {//Affichage des jauges
+      for (int j=0; j<6; j++) {
+        fill(255, 0, 0);
+        rect(tab6.get(l).x, tab6.get(l).y, tab6.get(l).xjauge2, 6);//Affichage
+        l++;
+      }
+    }
+    for (int i=0; i<48; i++) {
+      if (tab6.get(i).time>=300 && tab6.get(i).xjauge2>0) {//Quand la jauge est resté x temps >0 et qu'elle est encore supérieur à 0 alors elle descend
+        tab6.get(i).xjauge2--;
+        if (tab6.get(i).xjauge2==0) {//Quand elle redevient à 0
+          tab6.get(i).time=0;//Le temps avant qu'elle redescende est mis à 0
+          tab4.get(i).triche=0;//On peut de retour tricher
+        }
+      }
+    }
+    l=0;
+    k=0;
+    t=0;
+
+
+    fill(255);
+    ellipse(surv2.x, surv2.y, 20, 20);//Surv2
+    ellipse(surv3.x, surv3.y, 20, 20);//Surv3
+    if (niveautrois==1) {
+      ellipse(surv4.x, surv4.y, 20, 20);//Surv2
+      ellipse(surv5.x, surv5.y, 20, 20);//Surv3
+    }
+    noFill();
+    rect(tab5.get(20).x, tab5.get(20).y, 60, 60); //Place du perso
+    fill(0, 255, 0, 50);
+    rect(perso2.x-32, perso2.y-32, 84, 84); //Carré pour tricher perso
+    fill(0);
+    rect(perso2.x, perso2.y, 20, 20); //Perso
+
+    surveillantdeplacement();//Déplacement des surveillants
+
+
+
+    //Jauge de triche
+    time++;
+
+    for (int k=0; k<48; k++) {
+      if (tab4.get(k).x>perso2.x-32 && tab4.get(k).x<perso2.x+52 && tab4.get(k).y>perso2.y-32 && tab4.get(k).y<perso2.y+52 && espace==1 && k!=20 && tab4.get(k).triche==0) { //Si l'élève est dans la zone pour tricher et qu'il ne veut pas tricher à la place 20 = sa place
+        tempseleve++;
+        if (tab4.get(k).type !=5) {//Si l'élève n'est pas un fayot
+          tab6.get(k).xjauge2=tab6.get(k).xjauge2+0.5;//La barre augmente normalement
+        }
+        if (tab4.get(k).type ==5) {//Si l'élève est un fayot
+          tab6.get(k).xjauge2=tab6.get(k).xjauge2+5;//La barre augmente vite
+          image(point, tab6.get(k).x+12, tab6.get(k).y-50);//Point d'exclamation
+        }
+      }
+    }
+    for (int i=0; i<48; i++) {
+      if (tab6.get(i).xjauge2 >= 60) {//Si la barre est à 60 alors elle ne peut pas monté plus haut
+        tab6.get(i).xjauge2=60;
+
+        //if (tab6.get(i).xjauge2 > 0) { //Je vois pas à quoi ça sert à j'ai enlevé à remettre si sa bug
+        tab6.get(i).time++;//Le temps avant qu'elle redescende commence
+        //   }
+        if (tab4.get(i).triche == 0) { //
+          tab4.get(i).triche=1;//On ne peut plus tricher
+        }
+      }
+    }
+    //Points en fonction du type
+    for (int i=0; i<48; i++) {
+      if (tab6.get(i).xjauge2==60 && tab4.get(i).type==2 && tab4.get(i).triche==1) {//Moyen élève +3
+        score1=score1+3;
+        tab4.get(i).triche=2;
+      }
+    }
+    for (int i=0; i<48; i++) {
+      if (tab6.get(i).xjauge2==60 && tab4.get(i).type==3 && tab4.get(i).triche==1) {//Bon élève +5
+        score1=score1+5;
+        tab4.get(i).triche=2;
+      }
+    }
+    for (int i=0; i<48; i++) {
+      if (tab6.get(i).xjauge2==60 && tab4.get(i).type==4 && tab4.get(i).triche==1) {//Mauvais élève -2
+
+        score1=score1-2;
+        tab4.get(i).triche=2;
+      }
+    }
+    for (int i=0; i<48; i++) {
+      if (tab6.get(i).xjauge2==60 && tab4.get(i).type==5 && tab4.get(i).triche==1) {//Fayot 
+        nul=1;
+      }
+    }
+    if (varenter==1) {
+      time2++;
+    }
+    //Touche pour tricher 
+    if (varenter3==1 && time <=300) { //Si le joueur essaye d'utiliser sa capacité alors que la partie viens juste de commencé et que les élèves sont déjà de la couleur de leur type
+      fill(255);
+      text("Veuillez atteindre plus longtemps pour utiliser cette capacité", 125, 680);
+    }
+    if (enter==1) {//Quand le joueur appuis sur A
+      if (time<=300) {//Si les joueurs sont déjà affiché par leur type
+        varenter3=1;
+      }
+      if (time>300) {//Quand le temps dépasse 300
+        varenter=1;
+        for (int k=0; k<48; k++) {//On affiche la couleur de leur type au élève
+          tab4.get(k).couleur2=tab4.get(k).couleur;//On stock la couleur précédente
+
+          if (time2<300) {
+            if (tab4.get(k).type==2) tab4.get(k).couleur=color(255, 255, 0);
+            if (tab4.get(k).type==3) tab4.get(k).couleur=color(0, 255, 0);
+            if (tab4.get(k).type==4) tab4.get(k).couleur=color(255, 0, 0);
+            if (tab4.get(k).type==5) tab4.get(k).couleur=color(0, 0, 255);
+          }
+        }
+      }
+      enter=0;
+    }
+    if (time2>300 && varenter2==0) {//Quand le temps2 dépasse 300 on remet la couleur aléatoire du début
+      for (int k=0; k<48; k++) {
+        tab4.get(k).couleur=tab4.get(k).couleur2;
+      }
+      varenter2++; //On le fait qu'une seul fois
+    }
+    niveau1accueil=1;
+    //Timer
+    TempsSeconde++;
+    TempsSeconde=TempsSeconde-50;
+    if (TempsSeconde==-50) {//Si temps dépasse 60 seconde alors minute++
+      TempsMinute--;
+      TempsSeconde=3600;
+    }
+    if (TempsSeconde==0 && TempsMinute==0) {
+      nul=1;
+    }
+    fill(0, 45, 90); // Couleur des boutons
+    rect(1079, 0, 200, 720); // Rectangle de droite
+    fill(255);
+
+
+    //Temps
+    text("Temps:", 1100, 600);
+    text(TempsMinute, 1100, 650);//Minutes
+    text(":", 1130, 650);
+    text(TempsSeconde/60, 1150, 650);//Secondes
+
+    //Score texte
+    text("Score:", 1100, 450);
+    text(score1, 1100, 490);
+    text("/50", 1150, 490);
+    //Score barre
+    noFill();
+    rect(1100, 500, 160, 50);
+    fill(255, 255, 0);
+    rect(1100, 500, score1*3.2, 50);
+
+    //Phrase surv2
+
+    police = loadFont("SansSerif-18.vlw");
+    textFont(police);
+    if (timerphrase<=300) {//Intervalle entre chaque phrase
+      fill(255);
+      if (phrase==12) {
+        text(lines[phrase], surv2.x- (lines[phrase].length()/2)*9, surv2.y-40);
+        text(lines[phrase+1], surv2.x-lines[phrase].length()/2*9, surv2.y-20);
+      }
+      if (phrase==13) {
+        text(lines[phrase-1], surv2.x-(lines[phrase].length()/2)*9, surv2.y-40);
+        text(lines[phrase], surv2.x-(lines[phrase].length()/2)*9, surv2.y-20);
+      }
+      if (phrase !=12 && phrase != 13) {
+        text(lines[phrase], surv2.x-(lines[phrase].length()/2)*9, surv2.y-20);
+      }
+      timerphrase++;
+    } else {//Si l'intervalle est dépassé on peut remettre une autre phrase
+      phrase=(int)random(0, lines.length);
+      timerphrase=0;
+    }
+  }//Fin du stop
+  if (time3controle==1) {
+    time3++;
+  }
+  if (score>=50) {
+    gg=1;
+    time3controle=1;
+    page=5;
+    stop=1;
+    musique=3;
+    cadenas++;
+    accueil.hide();
+    stopmusic1();
+    if (time3>=100) {
+      page=5;
+    }
+  }
+  if (score<0) {
+    score=0;
+  }
+  if (nul==1) {
+
+    time3controle=1;
+    musique=2;
+    stop=1;
+    perdu=1;
+    accueil.hide();
+    stopmusic1();
+
+    if (time3>=100) {
+      page=4;
+    }
+  }
+}
+void surveillantdetection() {
+  //Détection surv2
+  pushStyle();
+  fill(0, 220, 200);
+  rect(0, 0, 1080, 720);
+  popStyle();
+
+  if (surv2.direction==1) {
+    fill(255);
+    triangle(surv2.x, surv2.y, surv2.x-100, surv2.y-200, surv2.x+100, surv2.y-200);
+    tmpDetect=hex(color(get(int(surv2.x), int(surv2.y-100))), 6);
+  }
+  if (surv2.direction==2) {
+
+    fill(255);
+    triangle(surv2.x, surv2.y, surv2.x-100, surv2.y+200, surv2.x+100, surv2.y+200);
+    tmpDetect=hex(color(get(int(surv2.x), int(surv2.y+100))), 6);
+  }
+  if (surv2.direction==3) {
+    fill(255);
+    triangle(surv2.x, surv2.y, surv2.x+200, surv2.y-100, surv2.x+200, surv2.y+100);
+    tmpDetect=hex(color(get(int(surv2.x+100), int(surv2.y))), 6);
+  }
+  if (surv2.direction==4) {
+    fill(255);
+    triangle(surv2.x, surv2.y, surv2.x-200, surv2.y-100, surv2.x-200, surv2.y+100);
+    tmpDetect=hex(color(get(int(surv2.x-100), int(surv2.y))), 6);
+  }
+
+  //Surv3
+  if (surv3.direction==1) {
+    fill(255);
+    triangle(surv3.x, surv3.y, surv3.x-100, surv3.y-200, surv3.x+100, surv3.y-200);
+    tmpDetect=hex(color(get(int(surv3.x), int(surv3.y-100))), 6);
+  }
+  if (surv3.direction==2) {
+
+    fill(255);
+    triangle(surv3.x, surv3.y, surv3.x-100, surv3.y+200, surv3.x+100, surv3.y+200);
+    tmpDetect=hex(color(get(int(surv3.x), int(surv3.y+100))), 6);
+  }
+  if (surv3.direction==3) {
+    fill(255);
+    triangle(surv3.x, surv3.y, surv3.x+200, surv3.y-100, surv3.x+200, surv3.y+100);
+    tmpDetect=hex(color(get(int(surv3.x+100), int(surv3.y))), 6);
+  }
+  if (surv3.direction==4) {
+    fill(255);
+    triangle(surv3.x, surv3.y, surv3.x-200, surv3.y-100, surv3.x-200, surv3.y+100);
+    tmpDetect=hex(color(get(int(surv3.x-100), int(surv3.y))), 6);
+  }
+  if (niveautrois==1) {
+    //surv4
+    if (surv4.direction==1) {
+      fill(255);
+      triangle(surv4.x, surv4.y, surv4.x-100, surv4.y-200, surv4.x+100, surv4.y-200);
+      tmpDetect=hex(color(get(int(surv4.x), int(surv4.y-100))), 6);
+    }
+    if (surv4.direction==2) {
+
+      fill(255);
+      triangle(surv4.x, surv4.y, surv4.x-100, surv4.y+200, surv4.x+100, surv4.y+200);
+      tmpDetect=hex(color(get(int(surv4.x), int(surv4.y+100))), 6);
+    }
+    if (surv4.direction==3) {
+      fill(255);
+      triangle(surv4.x, surv4.y, surv4.x+200, surv4.y-100, surv4.x+200, surv4.y+100);
+      tmpDetect=hex(color(get(int(surv4.x+100), int(surv4.y))), 6);
+    }
+    if (surv4.direction==4) {
+      fill(255);
+      triangle(surv4.x, surv4.y, surv4.x-200, surv4.y-100, surv4.x-200, surv4.y+100);
+      tmpDetect=hex(color(get(int(surv4.x-100), int(surv4.y))), 6);
+    }
+    //surv5
+    if (surv5.direction==1) {
+      fill(255);
+      triangle(surv5.x, surv5.y, surv5.x-100, surv5.y-200, surv5.x+100, surv5.y-200);
+      tmpDetect=hex(color(get(int(surv5.x), int(surv5.y-100))), 6);
+    }
+    if (surv5.direction==2) {
+
+      fill(255);
+      triangle(surv5.x, surv5.y, surv5.x-100, surv5.y+200, surv5.x+100, surv5.y+200);
+      tmpDetect=hex(color(get(int(surv5.x), int(surv5.y+100))), 6);
+    }
+    if (surv5.direction==3) {
+      fill(255);
+      triangle(surv5.x, surv5.y, surv5.x+200, surv5.y-100, surv5.x+200, surv5.y+100);
+      tmpDetect=hex(color(get(int(surv5.x+100), int(surv5.y))), 6);
+    }
+    if (surv5.direction==4) {
+      fill(255);
+      triangle(surv5.x, surv5.y, surv5.x-200, surv5.y-100, surv5.x-200, surv5.y+100);
+      tmpDetect=hex(color(get(int(surv5.x-100), int(surv5.y))), 6);
+    }
+  }
+
+  //Place de l'élève
+  if ((perso2.x >= tab5.get(20).x-25 && perso2.x <= tab5.get(20).x+60) && (perso2.y >= tab5.get(20).y-25 && perso2.y <= tab5.get(20).y+60))
+  {
+    persoplace=1;
+  } else {
+    persoplace=0;
+  }
+  if (persoplace !=1) {
+    for (int i=int(perso2.x); i<int(perso2.x)+25; i++) {
+      String detectPerso=hex(color((get(i, (int) perso2.y))), 6);
+
+      if (detectPerso.equals(tmpDetect)) {
+        nul=1;
+      }
+    }
+  }
+}
+void surveillantdeplacement() {
+  //Deplacement surv2
+  if (surv2.direction==1) {//Vers le haut
+    surv2.y=surv2.y-1;
+  }
+  if (surv2.direction==2) {//Vers le bas
+    surv2.y=surv2.y+1;
+  }
+  if (surv2.direction==3) {//Vers la droite
+    surv2.x=surv2.x+1;
+  }
+  if (surv2.direction==4) {//Vers la gauche
+    if (surv2.y != 620) {
+      surv2.x=surv2.x-1;
+    }
+  }
+  //surv2 déplacement intérieur
+  if ((surv2.x== 227 || surv2.x==337 || surv2.x==447 || surv2.x==557 || surv2.x==667 || surv2.x==777 || surv2.x==887) && (surv2.y==170 || surv2.y==270 || surv2.y==370 || surv2.y==470 || surv2.y==570)) {
+    surv2.direction=(int) random(1, 5);
+  }
+  //surv2 déplacement coin
+  if (surv2.x==117 && surv2.y==70) {//En haut a gauche
+    int i=(int) random(0, 2);
+    if (i == 0) {
+      surv2.direction=3;
+    }
+    if (i == 1) {
+      surv2.direction=2;
+    }
+  }
+
+  if (surv2.x==997 && surv2.y==70) {// En haut a droite
+    int i=(int) random(0, 2);
+    if (i == 0) {
+      surv2.direction=4;
+    }
+    if (i == 1) {
+      surv2.direction=2;
+    }
+  }
+  if (surv2.x==117 && surv2.y==670) {//En bas à gauche
+    int i=(int) random(0, 2);
+    if (i == 0) {
+      surv2.direction=3;
+    }
+    if (i == 1) {
+      surv2.direction=1;
+    }
+  }
+  if (surv2.x==997 && surv2.y==670) {// En bas à droite
+    int i=(int) random(0, 2);
+    if (i == 0) {
+      surv2.direction=1;
+    }
+    if (i == 1) {
+      surv2.direction=4;
+    }
+  }
+  //surv2 déplacement bords
+  if (surv2.x==117 && (surv2.y==170 || surv2.y==270 || surv2.y==370 || surv2.y==470 || surv2.y==570 )) {//Gauche
+    surv2.direction=(int) random(1, 4);
+  }
+  if (surv2.x==997 && (surv2.y==170 || surv2.y==270 || surv2.y==370 || surv2.y==470 || surv2.y==570 )) {//Droite
+
+    int i=(int) random(1, 4);
+    if (i== 1) {
+      surv2.direction=1;
+    }
+    if (i == 2) {
+      surv2.direction=2;
+    }
+    if (i == 3) {
+      surv2.direction=4;
+    }
+  }
+  if (surv2.y==70 && (surv2.x==227 || surv2.x== 337 || surv2.x==447 || surv2.x==557 || surv2.x==667 || surv2.x==777 || surv2.x==887)) {//Haut
+    surv2.direction=(int) random(2, 4);
+  }
+  if (surv2.y==670 && (surv2.x==227 || surv2.x== 337 || surv2.x==447 || surv2.x==557 || surv2.x==667 || surv2.x==777 || surv2.x==887)) {//Bas
+    int i=(int) random(1, 4);
+    if (i == 1) {
+      surv2.direction=1;
+    }
+    if (i == 2) {
+      surv2.direction=3;
+    }
+    if (i == 3) {
+      surv2.direction=4;
+    }
+  }
+
+  //Déplacement surv3
+  if (surv3.direction==1) {
+    surv3.y=surv3.y-1;
+  }
+  if (surv3.direction==2) {
+    surv3.y=surv3.y+1;
+  }
+  if (surv3.direction==3) {
+    surv3.x=surv3.x+1;
+  }
+  if (surv3.direction==4) {
+    if (surv3.y != 620) {
+      surv3.x=surv3.x-1;
+    }
+  }
+  if ((surv3.x== 227 || surv3.x==337 || surv3.x==447 || surv3.x==557 || surv3.x==667 || surv3.x==777 || surv3.x==887) && (surv3.y==170 || surv3.y==270 || surv3.y==370 || surv3.y==470 || surv3.y==570)) {
+    surv3.direction=(int) random(1, 5);
+  }
+  //surv3 déplacement coin
+  if (surv3.x==117 && surv3.y==70) {//En haut a gauche
+    int i=(int) random(0, 2);
+    if (i == 0) {
+      surv3.direction=3;
+    }
+    if (i == 1) {
+      surv3.direction=2;
+    }
+  }
+
+  if (surv3.x==997 && surv3.y==70) {// En haut a droite
+    int i=(int) random(0, 2);
+    if (i == 0) {
+      surv3.direction=4;
+    }
+    if (i == 1) {
+      surv3.direction=2;
+    }
+  }
+  if (surv3.x==117 && surv3.y==670) {//En bas à gauche
+    int i=(int) random(0, 2);
+    if (i == 0) {
+      surv3.direction=3;
+    }
+    if (i == 1) {
+      surv3.direction=1;
+    }
+  }
+  if (surv3.x==997 && surv3.y==670) {// En bas à droite
+    int i=(int) random(0, 2);
+    if (i == 0) {
+      surv3.direction=1;
+    }
+    if (i == 1) {
+      surv3.direction=4;
+    }
+  }
+  //surv3 déplacement bords
+  if (surv3.x==117 && (surv3.y==170 || surv3.y==270 || surv3.y==370 || surv3.y==470 || surv3.y==570 )) {//Gauche
+    surv3.direction=(int) random(1, 4);
+  }
+  if (surv3.x==997 && (surv3.y==170 || surv3.y==270 || surv3.y==370 || surv3.y==470 || surv3.y==570 )) {//Droite
+
+    int i=(int) random(1, 4);
+    if (i== 1) {
+      surv3.direction=1;
+    }
+    if (i == 2) {
+      surv3.direction=2;
+    }
+    if (i == 3) {
+      surv3.direction=4;
+    }
+  }
+  if (surv3.y==70 && (surv3.x==227 || surv3.x== 337 || surv3.x==447 || surv3.x==557 || surv3.x==667 || surv3.x==777 || surv3.x==887)) {//Haut
+    surv3.direction=(int) random(2, 4);
+  }
+  if (surv3.y==670 && (surv3.x==227 || surv3.x== 337 || surv3.x==447 || surv3.x==557 || surv3.x==667 || surv3.x==777 || surv3.x==887)) {//Bas
+    int i=(int) random(1, 4);
+    if (i == 1) {
+      surv3.direction=1;
+    }
+    if (i == 2) {
+      surv3.direction=3;
+    }
+    if (i == 3) {
+      surv3.direction=4;
+    }
+  }
+  if (niveautrois==1) {
+    //Déplacement surv4
+    if (surv4.direction==1) {
+      surv4.y=surv4.y-1;
+    }
+    if (surv4.direction==2) {
+      surv4.y=surv4.y+1;
+    }
+    if (surv4.direction==3) {
+      surv4.x=surv4.x+1;
+    }
+    if (surv4.direction==4) {
+      if (surv4.y != 620) {
+        surv4.x=surv4.x-1;
+      }
+    }
+    if ((surv4.x== 227 || surv4.x==337 || surv4.x==447 || surv4.x==557 || surv4.x==667 || surv4.x==777 || surv4.x==887) && (surv4.y==170 || surv4.y==270 || surv4.y==370 || surv4.y==470 || surv4.y==570)) {
+      surv4.direction=(int) random(1, 5);
+    }
+    //surv4 déplacement coin
+    if (surv4.x==117 && surv4.y==70) {//En haut a gauche
+      int i=(int) random(0, 2);
+      if (i == 0) {
+        surv4.direction=3;
+      }
+      if (i == 1) {
+        surv4.direction=2;
+      }
+    }
+
+    if (surv4.x==997 && surv4.y==70) {// En haut a droite
+      int i=(int) random(0, 2);
+      if (i == 0) {
+        surv4.direction=4;
+      }
+      if (i == 1) {
+        surv4.direction=2;
+      }
+    }
+    if (surv4.x==117 && surv4.y==670) {//En bas à gauche
+      int i=(int) random(0, 2);
+      if (i == 0) {
+        surv4.direction=3;
+      }
+      if (i == 1) {
+        surv4.direction=1;
+      }
+    }
+    if (surv4.x==997 && surv4.y==670) {// En bas à droite
+      int i=(int) random(0, 2);
+      if (i == 0) {
+        surv4.direction=1;
+      }
+      if (i == 1) {
+        surv4.direction=4;
+      }
+    }
+    //surv4 déplacement bords
+    if (surv4.x==117 && (surv4.y==170 || surv4.y==270 || surv4.y==370 || surv4.y==470 || surv4.y==570 )) {//Gauche
+      surv4.direction=(int) random(1, 4);
+    }
+    if (surv4.x==997 && (surv4.y==170 || surv4.y==270 || surv4.y==370 || surv4.y==470 || surv4.y==570 )) {//Droite
+
+      int i=(int) random(1, 4);
+      if (i== 1) {
+        surv4.direction=1;
+      }
+      if (i == 2) {
+        surv4.direction=2;
+      }
+      if (i == 3) {
+        surv4.direction=4;
+      }
+    }
+    if (surv4.y==70 && (surv4.x==227 || surv4.x== 337 || surv4.x==447 || surv4.x==557 || surv4.x==667 || surv4.x==777 || surv4.x==887)) {//Haut
+      surv4.direction=(int) random(2, 4);
+    }
+    if (surv4.y==670 && (surv4.x==227 || surv4.x== 337 || surv4.x==447 || surv4.x==557 || surv4.x==667 || surv4.x==777 || surv4.x==887)) {//Bas
+      int i=(int) random(1, 4);
+      if (i == 1) {
+        surv4.direction=1;
+      }
+      if (i == 2) {
+        surv4.direction=3;
+      }
+      if (i == 3) {
+        surv4.direction=4;
+      }
+    }
+    //Déplacement surv5
+    if (surv5.direction==1) {
+      surv5.y=surv5.y-1;
+    }
+    if (surv5.direction==2) {
+      surv5.y=surv5.y+1;
+    }
+    if (surv5.direction==3) {
+      surv5.x=surv5.x+1;
+    }
+    if (surv5.direction==4) {
+      if (surv5.y != 620) {
+        surv5.x=surv5.x-1;
+      }
+    }
+    if ((surv5.x== 227 || surv5.x==337 || surv5.x==447 || surv5.x==557 || surv5.x==667 || surv5.x==777 || surv5.x==887) && (surv5.y==170 || surv5.y==270 || surv5.y==370 || surv5.y==470 || surv5.y==570)) {
+      surv5.direction=(int) random(1, 5);
+    }
+    //surv5 déplacement coin
+    if (surv5.x==117 && surv5.y==70) {//En haut a gauche
+      int i=(int) random(0, 2);
+      if (i == 0) {
+        surv5.direction=3;
+      }
+      if (i == 1) {
+        surv5.direction=2;
+      }
+    }
+
+    if (surv5.x==997 && surv5.y==70) {// En haut a droite
+      int i=(int) random(0, 2);
+      if (i == 0) {
+        surv5.direction=4;
+      }
+      if (i == 1) {
+        surv5.direction=2;
+      }
+    }
+    if (surv5.x==117 && surv5.y==670) {//En bas à gauche
+      int i=(int) random(0, 2);
+      if (i == 0) {
+        surv5.direction=3;
+      }
+      if (i == 1) {
+        surv5.direction=1;
+      }
+    }
+    if (surv5.x==997 && surv5.y==670) {// En bas à droite
+      int i=(int) random(0, 2);
+      if (i == 0) {
+        surv5.direction=1;
+      }
+      if (i == 1) {
+        surv5.direction=4;
+      }
+    }
+    //surv5 déplacement bords
+    if (surv5.x==117 && (surv5.y==170 || surv5.y==270 || surv5.y==370 || surv5.y==470 || surv5.y==570 )) {//Gauche
+      surv5.direction=(int) random(1, 4);
+    }
+    if (surv5.x==997 && (surv5.y==170 || surv5.y==270 || surv5.y==370 || surv5.y==470 || surv5.y==570 )) {//Droite
+
+      int i=(int) random(1, 4);
+      if (i== 1) {
+        surv5.direction=1;
+      }
+      if (i == 2) {
+        surv5.direction=2;
+      }
+      if (i == 3) {
+        surv5.direction=4;
+      }
+    }
+    if (surv5.y==70 && (surv5.x==227 || surv5.x== 337 || surv5.x==447 || surv5.x==557 || surv5.x==667 || surv5.x==777 || surv5.x==887)) {//Haut
+      surv5.direction=(int) random(2, 4);
+    }
+    if (surv5.y==670 && (surv5.x==227 || surv5.x== 337 || surv5.x==447 || surv5.x==557 || surv5.x==667 || surv5.x==777 || surv5.x==887)) {//Bas
+      int i=(int) random(1, 4);
+      if (i == 1) {
+        surv5.direction=1;
+      }
+      if (i == 2) {
+        surv5.direction=3;
+      }
+      if (i == 3) {
+        surv5.direction=4;
+      }
+    }
+  }
+  //Triangle surv2
+  if (surv2.direction==1) {
+    fill(255, 0, 0, 150);
+    triangle(surv2.x, surv2.y, surv2.x-100, surv2.y-200, surv2.x+100, surv2.y-200);
+  }
+  if (surv2.direction==2) {
+    fill(255, 0, 0, 150);
+    triangle(surv2.x, surv2.y, surv2.x-100, surv2.y+200, surv2.x+100, surv2.y+200);
+  }
+  if (surv2.direction==3) {
+    fill(255, 0, 0, 150);
+    triangle(surv2.x, surv2.y, surv2.x+200, surv2.y-100, surv2.x+200, surv2.y+100);
+  }
+  if (surv2.direction==4) {
+    fill(255, 0, 0, 150);
+    triangle(surv2.x, surv2.y, surv2.x-200, surv2.y-100, surv2.x-200, surv2.y+100);
+  }
+  //Triangle surv3
+  if (surv3.direction==1) {
+    fill(255, 0, 0, 150);
+    triangle(surv3.x, surv3.y, surv3.x-100, surv3.y-200, surv3.x+100, surv3.y-200);
+  }
+  if (surv3.direction==2) {
+    fill(255, 0, 0, 150);
+    triangle(surv3.x, surv3.y, surv3.x-100, surv3.y+200, surv3.x+100, surv3.y+200);
+  }
+  if (surv3.direction==3) {
+    fill(255, 0, 0, 150);
+    triangle(surv3.x, surv3.y, surv3.x+200, surv3.y-100, surv3.x+200, surv3.y+100);
+  }
+  if (surv3.direction==4) {
+    fill(255, 0, 0, 150);
+    triangle(surv3.x, surv3.y, surv3.x-200, surv3.y-100, surv3.x-200, surv3.y+100);
+  }
+  if (niveautrois==1) {
+    //Triangle surv4
+    if (surv4.direction==1) {
+      fill(255, 0, 0, 150);
+      triangle(surv4.x, surv4.y, surv4.x-100, surv4.y-200, surv4.x+100, surv4.y-200);
+    }
+    if (surv4.direction==2) {
+      fill(255, 0, 0, 150);
+      triangle(surv4.x, surv4.y, surv4.x-100, surv4.y+200, surv4.x+100, surv4.y+200);
+    }
+    if (surv4.direction==3) {
+      fill(255, 0, 0, 150);
+      triangle(surv4.x, surv4.y, surv4.x+200, surv4.y-100, surv4.x+200, surv4.y+100);
+    }
+    if (surv4.direction==4) {
+      fill(255, 0, 0, 150);
+      triangle(surv4.x, surv4.y, surv4.x-200, surv4.y-100, surv4.x-200, surv4.y+100);
+    }
+    //Triangle surv5
+    if (surv5.direction==1) {
+      fill(255, 0, 0, 150);
+      triangle(surv5.x, surv5.y, surv5.x-100, surv5.y-200, surv5.x+100, surv5.y-200);
+    }
+    if (surv5.direction==2) {
+      fill(255, 0, 0, 150);
+      triangle(surv5.x, surv5.y, surv5.x-100, surv5.y+200, surv5.x+100, surv5.y+200);
+    }
+    if (surv5.direction==3) {
+      fill(255, 0, 0, 150);
+      triangle(surv5.x, surv5.y, surv5.x+200, surv5.y-100, surv5.x+200, surv5.y+100);
+    }
+    if (surv5.direction==4) {
+      fill(255, 0, 0, 150);
+      triangle(surv5.x, surv5.y, surv5.x-200, surv5.y-100, surv5.x-200, surv5.y+100);
+    }
+  }
+}
