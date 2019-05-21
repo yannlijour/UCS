@@ -1,104 +1,159 @@
 /*ULTIMATE CHEAT SIMULATOR */
 
+
+//les bibliothèques utilisées
 import ddf.minim.*;
 import controlP5.*;
 
 ControlP5 cp5;
+//Pour lire les fichiers mp3 avec minim
 AudioPlayer jcena;
 AudioPlayer fcount;
 AudioPlayer attente;
 AudioPlayer loser;
 AudioPlayer player;
+AudioPlayer hero;
+AudioPlayer jbond;
 Minim minim;
 
-personnage perso = new personnage();
-personnage perso2 = new personnage();
-surveillant surv1 = new surveillant();
-surveillant surv2 = new surveillant();
-surveillant surv3= new surveillant();
-surveillant surv4 = new surveillant();
-surveillant surv5= new surveillant();
+personnage perso = new personnage(); //Personnage niveau 1
+personnage perso2 = new personnage(); //Personnage niveau 2 &3
+surveillant surv1 = new surveillant(); //Surveillant niveau 1
+surveillant surv2 = new surveillant(); //Surveillant niveau 2 &3
+surveillant surv3 = new surveillant(); // Surveillant niveau 2 &3
+surveillant surv4 = new surveillant(); //Surveillant niveau 3
+surveillant surv5 = new surveillant(); //Surveillant niveau 3
 
-PFont police;
-String[] lines;
+PFont police;//variable de la police
+String[] lines;//phrases tiré au sort dans le fichier txt
+//Pour les images du niveau des toilettes
+PImage toilet1;
+PImage toilet2;
+PImage toilet3;
+PImage toilet4;
+//Pour le tuto
+PImage tuto1;
+PImage tuto2;
+PImage tuto3;
+PImage tuto4;
+PImage tuto5;
+PImage tuto6;
+PImage tuto7;
+PImage tuto8;
+PImage tuto9;
+//Pour les gameover
 PImage fin1;
 PImage fin2;
 PImage fin3;
 PImage fin4;
 PImage fin5;
+//pour l'écran de sélection de niveau
 PImage Niveau1;
 PImage Niveau2;
 PImage Niveau3;
+//pour les salles des niveaux
 PImage salle1;
 PImage salle2;
 PImage point;
-PImage win;
+PImage win; // quand l'on gagne
 PImage imagecadenas;
 int page;
-int niveauselection;
+int niveauselection; //le niveau sélectionner
+//Variable pour les tableaux
 int k =0;
 int t =0;
 int l =0;
 color  rectcouleur= color(30, 40, 255);
-ArrayList<eleve> tab1=new ArrayList<eleve>();
-ArrayList<table> tab2=new ArrayList<table>();
-ArrayList<jauge> tab3=new ArrayList<jauge>();
-ArrayList<eleve2> tab4=new ArrayList<eleve2>();
-ArrayList<table2> tab5=new ArrayList<table2>();
-ArrayList<jauge2> tab6=new ArrayList<jauge2>();
+
+//Création des tableaux
+ArrayList<eleve> tab1=new ArrayList<eleve>(); //tableau des élèves niveau 1
+ArrayList<table> tab2=new ArrayList<table>(); //tableau des tables niveau 1
+ArrayList<jauge> tab3=new ArrayList<jauge>(); //tableau des jauge de triche niveau 1
+ArrayList<eleve2> tab4=new ArrayList<eleve2>(); //tableau des élèves niveau 2 &3
+ArrayList<table2> tab5=new ArrayList<table2>(); //tableau des table niveau 2 &3
+ArrayList<jauge2> tab6=new ArrayList<jauge2>(); //tableau des jauge de triche niveau 2 &3
+
+//Variable avancé fluide
 int timerR=0;
 int timerL=0;
 int timerU=0;
 int timerD=0;
+
+//Variable collision
 int collisionL=0;
 int collisionR=0;
 int collisionU=0;
 int collisionD=0;
+
+//Variable surveillant direction
 int aleasurv=0;
-int variablegauchesurv1;
-int variablebassurv1;
-int espace=0;
-int enter=0;
-int time=0;
-int time2=0;
-int score=0;
+
+int espace=0;//quand on appuie sur tricher
+int enter=0;//quand on appuie sur a
+int time=0;//timer de la prmière aide
+int time2=0;//timer de la deuxième aide
+int score=0; //score variable niveau 1
 int tempseleve=0;
-int nul=0;
+int nul=0; //si l'on perd
+//variable de controle pour les aides
 int varenter;
 int varenter2=0;
 int varenter3=0;
-int niveau1accueil=0;
-int imagerandom=0;
+//fin des variable de controle
+int niveau1accueil=0; //passe a 1 quand un niveau est lancé
+int imagerandom=0; //image tiré au sort pour la fin
 int time3=0;
 int time3controle=0;
-int stop=0;
+int stop=0; //quand on perd le niveau s'arrête avec cette variable
+int tuto=1;//variable correspondant à la page du tuto affichée
+int toilet=1;//variable pour les deux premières images du jeu des toilettes
+int diahree=2;//variable pour lancer le jeu des toilettes
+int caca=0;// variable pour les deux fins du jeu des toilettes
+int tutoexe=0;//variable pour que le tuto ne se lance qu'une seule fois
 int stopcontrole=0;
-float fondu=0;
-int smoothcontroleR=0;
-int smoothcontroleL=0;
-int smoothcontroleU=0;
-int smoothcontroleD=0;
-int perdu=0;
-int stopdescentejauge=0;
-String tmpDetect="";
-int persoplace=0;
+float fondu=0;//variable fondu image de fin
+int perdu=0; //variable quand on perd
+int stopdescentejauge=0; //Quand la jauge de triche arrive a 0
+String tmpDetect=""; //pour la detection perso/triangle surv
+int persoplace=0; //Quand le personnage est dans sa place
+//pour le chrono
 int TempsSeconde=0;
-int TempsMinute=5;
-int phrase;
-int timerphrase;
-int musique=0;
-int gg=0;
-int score1=0;
-int niveaudeux;
-int niveautrois;
+int TempsMinute=3;
+//pour les phrases des surveillants
+int phrase; //phrase tiré au sort dans le fichier texte
+int timerphrase; //temps avant que l'on change de phrase
+int musique=0; //determine le son jouer
+int gg=0; //ne sert à rien
+int score1=0; //score du niveau 2 &3
+int niveaudeux; //quand on est dans le niveau 2
+int niveautrois; //quand on est dans le niveau 3
 int cadenas=0;
+int start1;//pour le chrono des toilettes
+int crotte=0;//variable qui compte le score du jeu des toilettes
+int imagetoilet=0;//variable pour retourner au niveau selectionné après les toilettes
+int vide=0;//variable empêchant le jeu des toilettes de se lancer plusieurs fois au cours d'un même niveau
+//boutons du programme
 controlP5.Button precedent;
 controlP5.Button suivant;
 controlP5.Button start;
 controlP5.Button accueil;
 
 void setup() {
+  //les différents fichiers utilisés
   lines  = loadStrings("list.txt");
+  tuto1 = loadImage("tuto1.png");
+  tuto2 = loadImage("tuto2.png");
+  tuto3 = loadImage("tuto3.png");
+  tuto4 = loadImage("tuto4.png");
+  tuto5 = loadImage("tuto5.png");
+  tuto6 = loadImage("tuto6.png");
+  tuto7 = loadImage("tuto7.png");
+  tuto8 = loadImage("tuto8.png");
+  tuto9 = loadImage("tuto9.png");
+  toilet1 = loadImage("toilets1.png");
+  toilet2 = loadImage("toilets2.png");
+  toilet3 = loadImage("toilets3.png");
+  toilet4 = loadImage("toilets4.png");
   fin1 = loadImage("fin1.png");
   fin2 = loadImage("fin2.png");
   fin3 = loadImage("fin3.png");
@@ -112,6 +167,20 @@ void setup() {
   point = loadImage("point.png");
   win = loadImage("win.jpg");
   imagecadenas = loadImage("cadenas.png");
+  //adaptation de la taille des images à celle du jeu
+  tuto1.resize(1080, 720);
+  tuto2.resize(1080, 720);
+  tuto3.resize(1080, 720);
+  tuto4.resize(1080, 720);
+  tuto5.resize(1080, 720);
+  tuto6.resize(1080, 720);
+  tuto7.resize(1080, 720);
+  tuto8.resize(1080, 720);
+  tuto9.resize(1080, 720);
+  toilet1.resize(1080, 720);
+  toilet2.resize(1080, 720);
+  toilet3.resize(1080, 720);
+  toilet4.resize(1080, 720);
   fin1.resize(1000, 720);
   fin2.resize(1000, 720);
   fin3.resize(1000, 720);
@@ -124,57 +193,145 @@ void setup() {
   salle1.resize(1080, 720);
   imagecadenas.resize(1279, 720);
   point.resize(50, 50);
-  background(255);
-  size(1280, 720);
+
+  background(255);//background blanc
+  size(1280, 720);//taille de la fenêtre
+
+  //librairies
   cp5 = new ControlP5(this);
   minim = new Minim(this);
+  //assignation des variables aux songs
   player = minim.loadFile("Mission Impossible Theme(full theme).mp3", 2048);
   loser = minim.loadFile("the-dickhead-song.mp3");
   attente = minim.loadFile("musique attente.mp3");
   jcena = minim.loadFile("john cena.mp3");
   fcount = minim.loadFile("final countdown.mp3");
-  creation();
-  page=0;
-  initialisation1();
-  initialisation2();
+  hero = minim.loadFile("hero.mp3");
+  jbond =minim.loadFile("jbond.mp3");
+  creation(); //creation des boutons
+  page=0; //page d'accueil
+  initialisation1(); //initialisation niveau 1
+  initialisation2(); //initailisation niveau 2
 }
 
-void draw() {
+void draw() {//void principale
   if (page==0) { //Accueil
     accueilpage();
   }
+
   if (page==1) { //Niveau 1
+
     collision();
-    niveau1();
+    if (diahree>1&&vide==0) {//si le jeu des toilettes n'est pas en cours et qu'il n'a pas encore été fait dans ce niveau
+      niveau1();
+      tuto();//lance le tuto
+      timetuto();//empecher le temps de s'écouler quand on est dans le tuto
+      diahree=(int) random(1, 9200 );
+
+      launchmusic();
+      stopmusic1();
+    }
+    if (diahree>1&&vide==1) {//si le jeu des toilettes n'est pas en cours mais qu'il a déjà été terminé dans ce niveau
+      niveau1();
+      tuto();//lance le tuto
+      timetuto();//empecher le temps de s'écouler quand on est dans le tuto
+      diahree=(int) random(2, 9200 );
+
+      launchmusic();
+      stopmusic1();
+    }
+
+    if (imagetoilet==3||imagetoilet==4) {//si le joueur termine le niveau des toilettes
+      delay(1500);
+      toilet=4;
+      imagetoilet=0;
+      vide=1;
+    }
+
+    if (diahree==1) {//lancement du jeu des toilettes
+      toilets();
+    }
     collision();
   }
+  //meme chose mais pour le niveau 2
   if (page==2) {
-    niveautrois=0;
-    niveaudeux=1;
-    collision2et3();
-    niveau2et3();
-    collision2et3();
+    if (diahree>1&&vide==0) {
+      niveautrois=0;//alternation entre niveau 2 &3
+      niveaudeux=1;
+      collision2et3(); //collision
+      niveau2et3();//niveau 2
+      collision2et3(); //collision
+      stopmusic1();
+      launchmusic();
+      diahree=(int) random(1, 9200 );
+    }
+    if (diahree>1&&vide==1) {
+      niveautrois=0;
+      niveaudeux=1;
+      collision2et3();
+      niveau2et3();//niveau 2
+      collision2et3();
+      stopmusic1();
+      launchmusic();
+      diahree=(int) random(20, 9200 );
+    }
+
+    if (imagetoilet==3||imagetoilet==4) {
+      delay(2000);
+      imagetoilet=0;
+      vide=1;
+    }
+
+    if (diahree==1) {
+      toilets();
+    }
   }
+  //meme chose mais pour le niveau 3
   if (page==3) {
-    niveaudeux=0;
-    niveautrois=1;
-    collision2et3();
-    niveau2et3();
-    collision2et3();
+    if (diahree>1&&vide==0) {
+      niveaudeux=0;
+      niveautrois=1;
+      collision2et3();
+      niveau2et3();//niveau 3
+      collision2et3();
+      launchmusic();
+      diahree=(int) random(1, 9200 );
+    }
+    if (diahree>1&&vide==1) {
+      niveaudeux=0;
+      niveautrois=1;
+      collision2et3();
+      niveau2et3();//niveau 3
+      collision2et3();
+      launchmusic();
+      diahree=(int) random(2, 9200 );
+      println (diahree);
+    }
+
+    if (imagetoilet==3||imagetoilet==4) {
+      delay(2000);
+      imagetoilet=0;
+      vide=1;
+    }
+
+
+    if (diahree==1) {
+      toilets();//lance le jeu des toillettes
+    }
   }
   if (page==4) { //Fondu
-    fondu();
+    fondu(); //lance la fondu
   }
   if (page==5) { //Gagner
     if (fondu <= 255) {
       accueil.hide();
       if (fondu<=10) {
         fill(0, 0, 0, fondu);
-        noStroke();
+        noStroke();//enlève les bords
         rect(1000, 0, 280, 720);
-        noFill();
+        noFill();//ne rempli pas
         tint(255, fondu);
-        image(win, 0, 0);
+        image(win, 0, 0); //image de win
         fondu=fondu+0.1;
       }
       if (fondu>=10) {
@@ -193,7 +350,7 @@ void draw() {
   }
 }
 
-void launchmusic() {
+void launchmusic() {//pour lancer la musique
   if (musique==0) {
     attente.play();
 
@@ -214,11 +371,18 @@ void launchmusic() {
     if (musique==4) {
       fcount.play();
     }
+    if (musique==5) {
+      jbond.play();
+    }
+    if (musique==6) {
+      hero.play();
+    }
   }
 }
 
 
-void keyPressed() {
+void keyPressed() {//Quand on appuie sur une touche
+
   if (key == CODED) {
     if (keyCode == LEFT) {
       if (page==1) {
@@ -279,56 +443,138 @@ void keyPressed() {
   }
 }
 
-void keyReleased () {
-  if (keyCode == LEFT) {
-    if (page==1) {
+void keyReleased () {//Quand on relache la touche
+
+  if (page==1) {//pendant le niveau 1
+    println(diahree);
+    if (key == ' ') {//déroulement du tuto
+
+      tuto=tuto+1;
+    }
+
+    if (key == ' '&& tuto>=9&&diahree==1) {//déroulement du jeu des toilettes après le tuto
+      toilet=2;
+    }
+    if (toilet ==2) {
+
+      if (key == 's') {
+        crotte++;
+        println(crotte);//pour voir combien de fois le joueur a tapé S
+        int timer=millis()-start1;//chrono
+        println(timer);//pour voir combien de temps il reste au joueur
+        if (crotte>=100&&timer<=25000) {
+          caca=2;//victoire
+          if (caca==2) {
+            score=score+10;
+            toilets();
+
+            diahree=2;
+          }
+        } 
+
+        if (crotte<=100&&timer>=25000) {//défaite
+
+          caca=1;
+          score=score-10;
+          diahree=2;
+          if (caca==1) {
+            toilets();
+
+            diahree=2;
+          }
+        }
+      }
+    }
+  }
+
+
+
+
+  //pareil pour le niveau 2
+  if (page==2 || page==3) {
+
+
+    if (key == ' '&&diahree==1) {
+      toilet=2;
+    }
+    if (toilet ==2) {
+      if (key == 's') {
+        crotte++;
+        println(crotte);
+        int timer=millis()-start1;
+        if (crotte>=100&&timer<=25000) {
+          caca=2;
+          if (caca==2) {
+            score=score+10;
+            toilets();
+
+            diahree=2;
+          }
+        }
+        if (crotte<=100&&timer>=5000) {
+
+          caca=1;
+          score=score-10;
+          diahree=2;
+          if (caca==1) {
+            toilets();
+
+            diahree=2;
+          }
+        }
+      }
+    }
+  }
+
+  if (keyCode == LEFT) {//touche de droite
+    if (page==1) {//pour le niveau 1
       timerL=0;
       collisionL=0;
     }      
-    if (page==2 || page==3) {
+    if (page==2 || page==3) {//pour le niveau 2 &3
       timerL=0;
       collisionL=0;
     }
   }
-  if (keyCode == RIGHT) {
-    if (page==1) {
+  if (keyCode == RIGHT) {//touche de gauche
+    if (page==1) {//pour le niveau 1
       timerR=0;
       collisionR=0;
     }      
-    if (page==2 || page==3) {
+    if (page==2 || page==3) {//pour le niveau 2 &3
       timerR=0;
       collisionR=0;
     }
   }
-  if (keyCode == UP) { 
-    if (page==1) {
+  if (keyCode == UP) { //touche du haut
+    if (page==1) {//pour le niveau 1
       timerU=0;
       collisionU=0;
     }      
-    if (page==2 || page==3) {
+    if (page==2 || page==3) { //pour le niveau 2 &3
       timerU=0;
       collisionU=0;
     }
   }
-  if (keyCode == DOWN) {
-    if (page==1) {
+  if (keyCode == DOWN) {// touche du bas
+    if (page==1) {// pour le niveau 1
       timerD=0;
       collisionD=0;
     }      
-    if (page==2 || page==3) {
+    if (page==2 || page==3) {//pour le niveau 2 &3
       timerD=0;
       collisionD=0;
     }
   }
-  if (key == ' ') {
+  if (key == ' ') {//quand on triche
     espace=0;
   }
 }
 
 
-void stopmusic1()
+void stopmusic1()//pour stopper la musique
 {
-  if (musique==0) {
+  if (musique==0) {//si l'on est sur l'accueil
     attente.play();
     player.rewind();
     player.pause();
@@ -338,8 +584,12 @@ void stopmusic1()
     jcena.pause();
     fcount.rewind();
     fcount.pause();
+    hero.rewind();
+    hero.pause();
+    jbond.rewind();
+    jbond.pause();
   }
-  if (musique==1) {
+  if (musique==1) {//si l'on est dans le niveau1
     player.play();
     loser.rewind();
     loser.pause();
@@ -349,8 +599,12 @@ void stopmusic1()
     jcena.pause();
     fcount.rewind();
     fcount.pause();
+    hero.rewind();
+    hero.pause();
+    jbond.rewind();
+    jbond.pause();
   }
-  if (musique==2) {
+  if (musique==2) {//si l'on perd
     loser.play();
     player.rewind();
     player.pause();
@@ -360,8 +614,12 @@ void stopmusic1()
     jcena.pause();
     fcount.rewind();
     fcount.pause();
+    hero.rewind();
+    hero.pause();
+    jbond.rewind();
+    jbond.pause();
   }
-  if (musique==3) {
+  if (musique==3) {//si l'on gagne
     jcena.play();
     fcount.rewind();
     fcount.pause();
@@ -371,8 +629,12 @@ void stopmusic1()
     player.pause();
     attente.rewind();
     attente.pause();
+    hero.rewind();
+    hero.pause();
+    jbond.rewind();
+    jbond.pause();
   }
-  if (musique==4) {
+  if (musique==4) {//si l'on est dans le niveau3
     fcount.play();
     jcena.rewind();
     jcena.pause();
@@ -382,8 +644,44 @@ void stopmusic1()
     player.pause();
     attente.rewind();
     attente.pause();
+    hero.rewind();
+    hero.pause();
+    jbond.rewind();
+    jbond.pause();
+  }
+  if (musique==5) {//si l'on est dans le niveau2
+    jbond.play();
+    jcena.rewind();
+    jcena.pause();
+    loser.rewind();
+    loser.pause();
+    player.rewind();
+    player.pause();
+    attente.rewind();
+    attente.pause();
+    fcount.rewind();
+    fcount.pause();
+    hero.rewind();
+    hero.pause();
+  }
+  if (musique==6) {//si l'on est dans le niveau des toilettes
+    hero.play();
+    jcena.rewind();
+    jcena.pause();
+    loser.rewind();
+    loser.pause();
+    player.rewind();
+    player.pause();
+    attente.rewind();
+    attente.pause();
+    fcount.rewind();
+    fcount.pause();
+    jbond.rewind();
+    jbond.pause();
   }
 }
+//Ici se trouvent toutes les class
+
 class eleve {
   float x=200;
   float y=200;
@@ -452,7 +750,7 @@ class table2 {
   float y=200;
   color c=color(64, 45, 12);
 }
-//Fondu
+//Fondu, ici est généré la fondu avec les images de fin quand on perd
 void fondu() {
 
   if (imagerandom==1) {
@@ -571,8 +869,82 @@ void fondu() {
     accueil.show();
   }
 }
-void accueilpage() {
+
+void tuto() {
+
+  if (tuto==1) { 
+    image(tuto1, 0, 0);
+  }
+  if (tuto==2) { 
+    image(tuto2, 0, 0);
+  }
+  if (tuto==3) { 
+    image(tuto3, 0, 0);
+  }
+  if (tuto==4) { 
+    image(tuto4, 0, 0);
+  }
+  if (tuto==5) { 
+    image(tuto5, 0, 0);
+  }
+  if (tuto==6) { 
+    image(tuto6, 0, 0);
+  }
+  if (tuto==7) { 
+    image(tuto7, 0, 0);
+  }
+  if (tuto==8) { 
+    image(tuto8, 0, 0);
+  }
+  if (tuto==9) { 
+    image(tuto9, 0, 0);
+  }
+  tutoexe=1;
+}
+void timetuto() {
+  if (tuto<=9) {
+    time=time-time;
+    TempsSeconde=0;
+    TempsMinute=3;
+    diahree=0;
+  }
+}
+
+void toilets() {
+  musique=6;
+  stopmusic1();
+  launchmusic();
+  if (toilet==1) {
+    background(0);
+    image(toilet1, 0, 0);
+  }
+  if (toilet==2) {
+    background(0);
+    image(toilet2, 0, 0);
+  }
+  if (caca==1) {
+    background(0);
+    image(toilet3, 0, 0);
+    imagetoilet=3;
+  }
+
+
+  if (caca==2) {
+    background(0);
+    image(toilet4, 0, 0);
+    imagetoilet=4;
+  }
+}
+void accueilpage() {//Quand on est dans la selection de niveau
   fill(255);
+  //on réinitialise les variables qui ont été changé
+  TempsMinute=3;
+  vide=0;
+  start1=25000;
+  toilet=1;
+  caca=0;
+  diahree=2;
+  crotte=0;
   musique=0;
   stopmusic1();
   launchmusic();
@@ -580,8 +952,9 @@ void accueilpage() {
   suivant.show();
   start.show();
   accueil.hide();
-  // fondu=255;
-    if (niveauselection==0) {
+
+
+  if (niveauselection==0) {//si le niveau sélectionner est 1
     background(0);
     textSize(16);
     text("Niveau 1", 620, 360);
@@ -589,8 +962,8 @@ void accueilpage() {
     text("Projet de fin d'année", 520, 50);
     image(Niveau1, 400, 90);
   }
-  
-  if (niveauselection==1 && cadenas>=1) {
+
+  if (niveauselection==1 && cadenas>=1) {//si le niveau sélectionner est 2 & que le niveau est dévérouillé
     background(0);
     textSize(16);
     text("Niveau 2", 620, 360);
@@ -598,7 +971,7 @@ void accueilpage() {
     text("Projet de fin d'année", 520, 50);
     image(Niveau2, 400, 90);
   }
-  if (niveauselection==1 && cadenas<=0) {
+  if (niveauselection==1 && cadenas<=0) {//si le niveau sélectionner est 2 & que le niveau est vérouillé
     background(0);
     textSize(16);
     text("Niveau 2", 620, 360);
@@ -606,9 +979,9 @@ void accueilpage() {
     text("Projet de fin d'année", 520, 50);
     image(Niveau2, 400, 90);
     image(imagecadenas, 0, 0);
-    start.hide();
+    start.hide();//on cache le bouton start car le niveau est vérouillé
   }
-  if (niveauselection==2 && cadenas>=2) {
+  if (niveauselection==2 && cadenas>=2) {//si le niveau sélectionner est 3 & que le niveau est dévérouillé
     background(0);
     textSize(16);
     text("Niveau 3", 620, 360);
@@ -616,7 +989,7 @@ void accueilpage() {
     text("Projet de fin d'année", 520, 50);
     image(Niveau3, 400, 90);
   }
-  if (niveauselection==2 && cadenas<=1) {
+  if (niveauselection==2 && cadenas<=1) {//si le niveau sélectionner est 3 & que le niveau est vérouillé
     background(0);
     textSize(16);
     text("Niveau 3", 620, 360);
@@ -624,11 +997,12 @@ void accueilpage() {
     text("Projet de fin d'année", 520, 50);
     image(Niveau3, 400, 90);
     image(imagecadenas, 0, 0);
-    start.hide();
+    start.hide();//on cache le bouton start
   }
 }
-void creation() {
+//Ici on gère les boutons CP5
 
+void creation() {//ici on créé les différents boutons
   precedent=cp5.addButton("precedent")
     .setPosition(0, 360)
     .setSize(100, 100)
@@ -647,35 +1021,35 @@ void creation() {
     ;
 }
 
-void precedent() {
-  niveauselection--;
-  if (niveauselection<0) {
+void precedent() {//Ici on gère le bouton précédent
+  niveauselection--;//on descend la selction ex: niveau2 -> niveau1
+  if (niveauselection<0) {//si la sélection est déjà sur la sélection minimale on ne peut pas descendre plus bas
     niveauselection=0;
   }
 }
 
 void suivant() {
-  niveauselection++;
-  if (niveauselection>2) {
+  niveauselection++;//on augmente la selection ex: niv2->niv3
+  if (niveauselection>2) {//si la sélection est déjà sur le niveau 3 on ne peut aller plus loin
     niveauselection=2;
   }
 }
 
-void start() {
-  if (niveauselection==0) {
-    page=1;
+void start() {//lorsque l'on appuie sur start
+  if (niveauselection==0) {//si le niveau 1 est sélectionner
+    page=1;//on lance le niveau 1
   }
-  if (niveauselection==1) {
-    page=2;
+  if (niveauselection==1) {//si le niveau 2 est sélectionner
+    page=2;//on lance le niveau 2
   }
-  if (niveauselection==2) {
-    page=3;
+  if (niveauselection==2) {//si le niveau 3 est sélectionner
+    page=3;//on lance le niveau 3
   }
 }
 
 
-void accueil() {
-  if (niveau1accueil==1) {
+void accueil() {//lorsque on appuie sur accueil
+  if (niveau1accueil==1) {    //on reinitialise les variables uniquement si un niveau a déjà été lancé
     accueilpage();
     perso.x=538;
     perso.y=428;
@@ -695,8 +1069,6 @@ void accueil() {
     collisionU=0;
     collisionD=0;
     aleasurv=0;
-    variablegauchesurv1=0;
-    variablebassurv1=0;
     espace=0;
     enter=0;
     time=0;
@@ -713,7 +1085,6 @@ void accueil() {
     stop=0;
     stopcontrole=0;
     fondu=0;
-    smoothcontroleR=0;
     perdu=0;
     persoplace=0;
     TempsSeconde=0;
@@ -727,276 +1098,290 @@ void accueil() {
       tab6.get(i).xjauge2=0;
     }
   }
+  
   niveau1accueil=0;
+  //on fait l'initialisation du niveau 1 & 2 & 3
   initialisation1();
   initialisation2();
-}
-void collision() {
-  //Collision table
-  for (int i=0; i<20; i++) {
+}void collision() {
+  //Collision qui tourne en continue
+  for (int i=0; i<20; i++) {//on vérifie pour les 20 tables
+    //collisions avec le bas de la table
     if (perso.x > tab2.get(i).x-25 && perso.x <tab2.get(i).x+75 && (perso.y == tab2.get(i).y+24 || perso.y == tab2.get(i).y+23 || perso.y == tab2.get(i).y+20) ) {
-      perso.y=tab2.get(i).y+25;
+      perso.y=tab2.get(i).y+25;//on remet le perso à sa place
     }
   }
-  for (int i=0; i<20; i++) {
+  for (int i=0; i<20; i++) {//on vérifie pour les 20 tables
+    //collisions avec le haut de la table
     if (perso.x > tab2.get(i).x-25 && perso.x <tab2.get(i).x+75 && (perso.y == tab2.get(i).y-23 ||perso.y == tab2.get(i).y-20) ) {
-      perso.y=tab2.get(i).y-25;
+      perso.y=tab2.get(i).y-25;//on remet le perso à sa place
     }
   }
-  for (int i=0; i<20; i++) {
+  for (int i=0; i<20; i++) {//on vérifie pour les 20 tables
+    //collisions avec la gauche de la table
     if (perso.x == tab2.get(i).x+27 && perso.y > tab2.get(i).y-25 && perso.y<tab2.get(i).y+25) {
-      perso.x=tab2.get(i).x-25;
+      perso.x=tab2.get(i).x-25;//on remet le perso à sa place
     }
   }
-  for (int i=0; i<20; i++) {
+  for (int i=0; i<20; i++) {//on vérifie pour les 20 tables
+    //collisions avec la droite de la table
     if (perso.x == tab2.get(i).x+73 && perso.y > tab2.get(i).y-25 && perso.y<tab2.get(i).y+25) {
-      perso.x=tab2.get(i).x+75;
+      perso.x=tab2.get(i).x+75;//on remet le perso à sa place
     }
   }
-  if (collisionR==1) {
-    for (int i=0; i<20; i++) {
+  
+  //collision qui tourne lorsqu'un on appuie sur une touche pour avancé
+  if (collisionR==1) {//collisions avec la gauche de la table
+    for (int i=0; i<20; i++) {//on vérifie pour les 20 tables
       if (perso.x > tab2.get(i).x-25 && perso.x <tab2.get(i).x+75 && perso.y > tab2.get(i).y-25 && perso.y<tab2.get(i).y+25) {
-        perso.x=tab2.get(i).x-25;
+        perso.x=tab2.get(i).x-25;//on remet le perso à sa place
       }
     }
   }
-  if (collisionL==1) {
-    for (int i=0; i<20; i++) {
+  if (collisionL==1) {//collisions avec la droite de la table
+    for (int i=0; i<20; i++) {//on vérifie pour les 20 tables
       if (perso.x > tab2.get(i).x-25 && perso.x <tab2.get(i).x+75 && perso.y > tab2.get(i).y-25 && perso.y<tab2.get(i).y+25) {
-        perso.x=tab2.get(i).x+75;
+        perso.x=tab2.get(i).x+75;//on remet le perso à sa place
       }
     }
   }
-  if (collisionU==1) {
-    for (int i=0; i<20; i++) {
+  if (collisionU==1) {//collisions avec le bas de la table
+    for (int i=0; i<20; i++) {//on vérifie pour les 20 tables
       if (perso.x > tab2.get(i).x-25 && perso.x <tab2.get(i).x+75 && perso.y > tab2.get(i).y-25 && perso.y<tab2.get(i).y+25) {
-        perso.y=tab2.get(i).y+25;
+        perso.y=tab2.get(i).y+25;//on remet le perso à sa place
       }
     }
   }
-  if (collisionD==1) {
-    for (int i=0; i<20; i++) {
+  if (collisionD==1) {//collisions avec le haut de table
+    for (int i=0; i<20; i++) {//on vérifie pour les 20 tables
       if (perso.x > tab2.get(i).x-25 && perso.x <tab2.get(i).x+75 && perso.y > tab2.get(i).y-25 && perso.y<tab2.get(i).y+25) {
-        perso.y=tab2.get(i).y-25;
+        perso.y=tab2.get(i).y-25;//on remet le perso à sa place
       }
     }
   }
-  // Collision bords
-
+  
+  // Collision avec les bords du jeu
   if (perso.x<0) {
-    perso.x=0;
+    perso.x=0;//on remet le perso à sa place
   }
   if (perso.x>1055) {
-    perso.x=1055;
+    perso.x=1055;//on remet le perso à sa place
   }
   if (perso.y>695) {
-    perso.y=695;
+    perso.y=695;//on remet le perso à sa place
   }
   if (perso.y<0) {
-    perso.y=0;
+    perso.y=0;//on remet le perso à sa place
   }
 }
-void collision2et3() {
-  //Collision table
-  for (int i=0; i<48; i++) {
+
+void collision2et3() {//collision pour les niveau 2 &3
+  //Collision qui tourne en continue
+  for (int i=0; i<48; i++) {//on vérifie pour les 48 tables
     if (perso2.x > tab5.get(i).x-20 && perso2.x <tab5.get(i).x+60 && (perso2.y == tab5.get(i).y+19 || perso2.y == tab5.get(i).y+18 || perso2.y == tab5.get(i).y+17 || perso2.y == tab5.get(i).y+16 || perso2.y == tab5.get(i).y+15 ) ) {//Bas
-      perso2.y=tab5.get(i).y+20;
+      perso2.y=tab5.get(i).y+20;//on remet le perso à sa place
     }
   }
-  for (int i=0; i<48; i++) {
+  for (int i=0; i<48; i++) {//on vérifie pour les 48 tables
     if (perso2.x > tab5.get(i).x-20 && perso2.x <tab5.get(i).x+60 && (perso2.y == tab5.get(i).y-10 ||perso2.y == tab5.get(i).y-11 ||perso2.y == tab5.get(i).y-12 ||perso2.y == tab5.get(i).y-13 ||perso2.y == tab5.get(i).y-14||perso2.y == tab5.get(i).y-15 || perso2.y == tab5.get(i).y-18 || perso2.y == tab5.get(i).y-19) ) {//Haut
-      perso2.y=tab5.get(i).y-20;
+      perso2.y=tab5.get(i).y-20;//on remet le perso à sa place
     }
   }
-  for (int i=0; i<48; i++) {
+  for (int i=0; i<48; i++) {//on vérifie pour les 48 tables
     if (perso2.x == tab5.get(i).x+22 && perso2.y > tab5.get(i).y-20 && perso2.y<tab5.get(i).y+20) {//Gauche
-      perso2.x=tab5.get(i).x-20;
+      perso2.x=tab5.get(i).x-20;//on remet le perso à sa place
     }
   }
-  for (int i=0; i<48; i++) {
+  for (int i=0; i<48; i++) {//on vérifie pour les 48 tables
     if (perso2.x == tab5.get(i).x+58 && perso2.y > tab5.get(i).y-20 && perso2.y<tab5.get(i).y+20) {//Droite
-      perso2.x=tab5.get(i).x+60;
+      perso2.x=tab5.get(i).x+60;//on remet le perso à sa place
     }
   }
-  if (collisionR==1) {
-    for (int i=0; i<48; i++) {
+  //collisions qui tourne lorsque on appuie sur avancer
+  if (collisionR==1) {//collisions avec la gauche de la table
+    for (int i=0; i<48; i++) {//on vérifie pour les 48 tables
       if (perso2.x > tab5.get(i).x-20 && perso2.x <tab5.get(i).x+60 && perso2.y > tab5.get(i).y-20 && perso2.y<tab5.get(i).y+20) {
-        perso2.x=tab5.get(i).x-20;
+        perso2.x=tab5.get(i).x-20;//on remet le perso à sa place
       }
     }
   }
-  if (collisionL==1) {
-    for (int i=0; i<48; i++) {
+  if (collisionL==1) {//collisions avec la droite de la table
+    for (int i=0; i<48; i++) {//on vérifie pour les 48 tables
       if (perso2.x > tab5.get(i).x-20 && perso2.x <tab5.get(i).x+60 && perso2.y > tab5.get(i).y-20 && perso2.y<tab5.get(i).y+20) {
-        perso2.x=tab5.get(i).x+60;
+        perso2.x=tab5.get(i).x+60;//on remet le perso à sa place
       }
     }
   }
-  if (collisionU==1) {
-    for (int i=0; i<48; i++) {
+  if (collisionU==1) {//collisions avec le bas de la table
+    for (int i=0; i<48; i++) {//on vérifie pour les 48 tables
       if (perso2.x > tab5.get(i).x-20 && perso2.x <tab5.get(i).x+60 && perso2.y > tab5.get(i).y-20 && perso2.y<tab5.get(i).y+20) {
-        perso2.y=tab5.get(i).y+20;
+        perso2.y=tab5.get(i).y+20;//on remet le perso à sa place
       }
     }
   }
-  if (collisionD==1) {
-    for (int i=0; i<48; i++) {
+  if (collisionD==1) {//collisions avec le haut de la table
+    for (int i=0; i<48; i++) {//on vérifie pour les 48 tables
       if (perso2.x > tab5.get(i).x-20 && perso2.x <tab5.get(i).x+60 && perso2.y > tab5.get(i).y-20 && perso2.y<tab5.get(i).y+20) {
-        perso2.y=tab5.get(i).y-20;
+        perso2.y=tab5.get(i).y-20;//on remet le perso à sa place
       }
     }
   }
   // Collision bords
 
   if (perso2.x<0) {
-    perso2.x=0;
+    perso2.x=0;//on remet le perso à sa place
   }
   if (perso2.x>1055) {
-    perso2.x=1060;
+    perso2.x=1060;//on remet le perso à sa place
   }
   if (perso2.y>695) {
-    perso2.y=700;
+    perso2.y=700;//on remet le perso à sa place
   }
   if (perso2.y<0) {
-    perso2.y=0;
+    perso2.y=0;//on remet le perso à sa place
   }
 }
-void initialisation1() {
-  for (int i=0; i<5; i++) {
+void initialisation1() {//on initialise les variables
+  for (int i=0; i<5; i++) {//création des élèves
     for (int j=0; j<4; j++) {
       background(255);
 
-      tab1.add(new eleve());
+      tab1.add(new eleve());//on ajoute des élèves dans la class
       tab1.get(k).type=(int) random(2, 6);
-      tab1.get(k).x= 250+i*150;
-      tab1.get(k).y= 200+j*120;
-      if (tab1.get(k).type==2) tab1.get(k).couleur=color(255, 255, 0);
+      tab1.get(k).x= 250+i*150;//on leur donne une position en x en fonction de leur numéro
+      tab1.get(k).y= 200+j*120;//on leur donne une position en y en fonction de leur numéro
+      if (tab1.get(k).type==2) tab1.get(k).couleur=color(255, 255, 0);//en fonction de leur type on leur assigne leur couleur
       if (tab1.get(k).type==3) tab1.get(k).couleur=color(0, 255, 0);
       if (tab1.get(k).type==4) tab1.get(k).couleur=color(255, 0, 0);
       if (tab1.get(k).type==5) tab1.get(k).couleur=color(0, 0, 255);
       if (k==10) {
-        tab1.get(k).type=6;
+        tab1.get(k).type=6;//si le numéro correspond au numéro de la table du joueur on affiche rien
       }
       k++;
     }
   }
-  for (int i=0; i<5; i++) {
+  for (int i=0; i<5; i++) {//création des tables
     for (int j=0; j<4; j++) {
       background(255);
 
-      tab2.add(new table());
+      tab2.add(new table());//on ajoute des tables dans la class
       tab2.get(t).x= 213+i*150;
       tab2.get(t).y= 163+j*120;
       t++;
     }
   }
-  for (int i=0; i<5; i++) {
+  for (int i=0; i<5; i++) {//création des jauges de triche
     for (int j=0; j<4; j++) {
       background(255);
 
-      tab3.add(new jauge());
+      tab3.add(new jauge());//on les ajoute dans la class
       tab3.get(l).x= 213+i*150;
       tab3.get(l).y= 163+j*120;
       l++;
     }
   }
+  //on passe k t et l à 0 pour ne pas générer des élèves à l'infini
   k=0;
   t=0;
   l=0;
   aleasurv=(int) random(1, 5);
 
   stroke(0);
-  imagerandom=(int) random(1, 6);
+  imagerandom=(int) random(1, 6);//on choii l'image si l'on perd
+  //position du surveillant
   surv1.x=475;
   surv1.y=100;
-  surv1.direction=2;
+  surv1.direction=2;//direction
 }
 void niveau1() {
+  //musique
   musique=1;
   stopmusic1();
   launchmusic();
-  if (stop==0) {
-    //Avancé smooth
-    if (timerR==1) {
+  if (stop==0) {//quand le jeu s'arrête
+    //Avancé fluide
+    if (timerR==1) {//vers la droite
       perso.x = perso.x+2;
     }
-    if (timerL==1) {
+    if (timerL==1) {//vers la gauche
       perso.x = perso.x-2;
     }
-    if (timerU==1) {
+    if (timerU==1) {//vers le haut
       perso.y = perso.y-2;
     }
-    if (timerD==1) {
+    if (timerD==1) {//vers le bas
       perso.y = perso.y+2;
     }
     //Boutons
-    precedent.hide();
-    suivant.hide();
-    start.hide();
-    accueil.show();
+    precedent.hide();//on le cache  
+    suivant.hide();//on le cache
+    start.hide();//on le cache
+    accueil.show();//on le montre
 
     //Détection triangle/perso
-    pushStyle();
+    pushStyle();//une sorte de void de style
     fill(0, 220, 200);
     rect(0, 0, 1080, 720);
-    popStyle();
+    popStyle();//on sort de la void de style
 
-    if (surv1.direction==1) {
+
+    //création d'un triangle surveillant et détection de si l'élève est à l'intérieur
+    if (surv1.direction==1) {//vers le haut
       fill(255);
       triangle(surv1.x, surv1.y, surv1.x-100, surv1.y-200, surv1.x+100, surv1.y-200);
       tmpDetect=hex(color(get(int(surv1.x), int(surv1.y-100))), 6);
     }
-    if (surv1.direction==2) {
+    if (surv1.direction==2) {//vers le bas
 
       fill(255);
       triangle(surv1.x, surv1.y, surv1.x-100, surv1.y+200, surv1.x+100, surv1.y+200);
       tmpDetect=hex(color(get(int(surv1.x), int(surv1.y+100))), 6);
     }
-    if (surv1.direction==3) {
+    if (surv1.direction==3) {//vers la droite
       fill(255);
       triangle(surv1.x, surv1.y, surv1.x+200, surv1.y-100, surv1.x+200, surv1.y+100);
       tmpDetect=hex(color(get(int(surv1.x+100), int(surv1.y))), 6);
     }
-    if (surv1.direction==4) {
+    if (surv1.direction==4) {//vers la gauche
       fill(255);
       triangle(surv1.x, surv1.y, surv1.x-200, surv1.y-100, surv1.x-200, surv1.y+100);
       tmpDetect=hex(color(get(int(surv1.x-100), int(surv1.y))), 6);
     }
     fill(0);
     //Place de l'élève
-    if ((perso.x >= 513-25 && perso.x <= 588) && (perso.y >= 403-25 && perso.y <= 488)) {
+    if ((perso.x >= 513-25 && perso.x <= 588) && (perso.y >= 403-25 && perso.y <= 488)) {//si le personnage si situe dans sa place
       persoplace=1;
     } else {
       persoplace=0;
     }
-    if (persoplace !=1) {
+    if (persoplace !=1) {//si il n'est pas dans sa place il peut se faire détecter
       for (int i=int(perso.x); i<int(perso.x)+25; i++) {
         String detectPerso=hex(color((get(i, (int) perso.y))), 6);
 
         if (detectPerso.equals(tmpDetect)) {
-          nul=1;
+          nul=1;//si il est dans le triangle du surveillant il perd
         }
       }
     }
     //Tableaux
-    image(salle1, 0, 0);
+    image(salle1, 0, 0);//fond d'écran
     fill(0, 255, 0, 50);
-    rect(perso.x-40, perso.y-40, 105, 105);
+    rect(perso.x-40, perso.y-40, 105, 105);//rectangle pour tricher personnage
 
-    for (int i=0; i<5; i++) {
+    for (int i=0; i<5; i++) {//on affiche les joueurs
       for (int j=0; j<4; j++) {
 
         fill(tab1.get(k).couleur);
         if (tab1.get(k).type<6) {
           ellipse(tab1.get(k).x, tab1.get(k).y, 25, 25);
-          if (time==300) {
+          if (time==300) {//si le jeu est lancé depuis plus de 300 tours de la void draw on donne une couleur aléatoire aux élèves
             tab1.get(k).couleur=color(random(255), random(255), random(255));
           }
         }
         k++;
       }
     }
-    for (int i=0; i<5; i++) {
+    for (int i=0; i<5; i++) {//on affiche les tables
       for (int j=0; j<4; j++) {
 
         fill(tab2.get(t).c);
@@ -1004,7 +1389,7 @@ void niveau1() {
         t++;
       }
     }
-    //Jauge qui monte
+    //on affiche les jauges
     for (int i=0; i<5; i++) {
       for (int j=0; j<4; j++) {
         fill(255, 0, 0);
@@ -1014,15 +1399,13 @@ void niveau1() {
       }
     }
 
-    //Jauge qui descend
+    //Jauge qui descend quand le temps est dépassé
     for (int i=0; i<20; i++) {
-
-      if (tab3.get(i).time>=300 && tab3.get(i).xjauge>0) {
-
+      if (tab3.get(i).time>=1200 && tab3.get(i).xjauge>0) {
         tab3.get(i).xjauge--;
         if (tab3.get(i).xjauge==0) {
-          tab3.get(i).time=0;
-          tab1.get(i).triche=0;
+          tab3.get(i).time=0;//le temps repasse à 0
+          tab1.get(i).triche=0;//quand le temps est dépassé on peut retricher
         }
       }
     }
@@ -1032,120 +1415,35 @@ void niveau1() {
     k=0;
 
     fill(0);
+    //affichage du personnag
     rect(perso.x, perso.y, 25, 25);
     noFill();
     rect(513, 403, 75, 75);
     fill(255);
+    //affichage du surveillant
     ellipse(surv1.x, surv1.y, 25, 25);
-    if (surv3.direction==1) {//Vers le haut
-      surv2.y=surv2.y-1;
-    }
-    if (surv2.direction==2) {//Vers le bas
-      surv2.y=surv2.y+1;
-    }
-    if (surv2.direction==3) {//Vers la droite
-      surv2.x=surv2.x+1;
-    }
-    if (surv2.direction==4) {//Vers la gauche
-      if (surv2.y != 620) {
-        surv2.x=surv2.x-1;
-      }
-    }
-    //surv2 déplacement intérieur
-    if ((surv2.x== 227 || surv2.x==337 || surv2.x==447 || surv2.x==557 || surv2.x==667 || surv2.x==777 || surv2.x==887) && (surv2.y==170 || surv2.y==270 || surv2.y==370 || surv2.y==470 || surv2.y==570)) {
-      surv2.direction=(int) random(1, 5);
-    }
-    //surv2 déplacement coin
-    if (surv2.x==117 && surv2.y==70) {//En haut a gauche
-      int i=(int) random(0, 2);
-      if (i == 0) {
-        surv2.direction=3;
-      }
-      if (i == 1) {
-        surv2.direction=2;
-      }
-    }
-
-    if (surv2.x==997 && surv2.y==70) {// En haut a droite
-      int i=(int) random(0, 2);
-      if (i == 0) {
-        surv2.direction=4;
-      }
-      if (i == 1) {
-        surv2.direction=2;
-      }
-    }
-    if (surv2.x==117 && surv2.y==670) {//En bas à gauche
-      int i=(int) random(0, 2);
-      if (i == 0) {
-        surv2.direction=3;
-      }
-      if (i == 1) {
-        surv2.direction=1;
-      }
-    }
-    if (surv2.x==997 && surv2.y==670) {// En bas à droite
-      int i=(int) random(0, 2);
-      if (i == 0) {
-        surv2.direction=1;
-      }
-      if (i == 1) {
-        surv2.direction=4;
-      }
-    }
-    //surv2 déplacement bords
-    if (surv2.x==117 && (surv2.y==170 || surv2.y==270 || surv2.y==370 || surv2.y==470 || surv2.y==570 )) {//Gauche
-      surv2.direction=(int) random(1, 4);
-    }
-    if (surv2.x==997 && (surv2.y==170 || surv2.y==270 || surv2.y==370 || surv2.y==470 || surv2.y==570 )) {//Droite
-
-      int i=(int) random(1, 4);
-      if (i== 1) {
-        surv2.direction=1;
-      }
-      if (i == 2) {
-        surv2.direction=2;
-      }
-      if (i == 3) {
-        surv2.direction=4;
-      }
-    }
-    if (surv2.y==70 && (surv2.x==227 || surv2.x== 337 || surv2.x==447 || surv2.x==557 || surv2.x==667 || surv2.x==777 || surv2.x==887)) {//Haut
-      surv2.direction=(int) random(2, 4);
-    }
-    if (surv2.y==670 && (surv2.x==227 || surv2.x== 337 || surv2.x==447 || surv2.x==557 || surv2.x==667 || surv2.x==777 || surv2.x==887)) {//Bas
-      int i=(int) random(1, 4);
-      if (i == 1) {
-        surv2.direction=1;
-      }
-      if (i == 2) {
-        surv2.direction=3;
-      }
-      if (i == 3) {
-        surv2.direction=4;
-      }
-    }
+    //déplacement du surveillants
 
     //Surv1 déplacement
-    if (surv1.direction==1) {
+    if (surv1.direction==1) {//déplacement vers le haut
       surv1.y=surv1.y-1;
     }
-    if (surv1.direction==2) {
+    if (surv1.direction==2) {//déplacement vers le bas
       surv1.y=surv1.y+1;
     }
-    if (surv1.direction==3) {
+    if (surv1.direction==3) {//déplacement vers la droite
       surv1.x=surv1.x+1;
     }
-    if (surv1.direction==4) {
+    if (surv1.direction==4) {//déplacement vers la gauche
       if (surv1.y != 620) {
         surv1.x=surv1.x-1;
       }
     }
-    //Surv1 déplacement intérieur
+    //Surv1 déplacement intérieur il se déplace dans 4 directions
     if ((surv1.x==325 || surv1.x== 475 || surv1.x==625 || surv1.x==775) && (surv1.y==260 || surv1.y==380 || surv1.y==500)) {
       surv1.direction=(int) random(1, 5);
     }
-    //Surv1 déplacement coin
+    //Surv1 déplacement coin  il se déplace dans 2 directions
     if (surv1.x==175 && surv1.y==140) {
       int i=(int) random(0, 2);
       if (i == 0) {
@@ -1183,7 +1481,7 @@ void niveau1() {
         surv1.direction=4;
       }
     }
-    //Surv1 déplacement bords
+    //Surv1 déplacement bords  il se déplace dans 3 directions
     if (surv1.x==175 && (surv1.y==260 || surv1.y==380 || surv1.y==500)) {
       surv1.direction=(int) random(1, 4);
     }
@@ -1216,20 +1514,20 @@ void niveau1() {
       }
     }
 
-    //Triangle surv1
-    if (surv1.direction==1) {
+    //affichage des triangles surv1
+    if (surv1.direction==1) {//vers le haut
       fill(255, 0, 0, 150);
       triangle(surv1.x, surv1.y, surv1.x-100, surv1.y-200, surv1.x+100, surv1.y-200);
     }
-    if (surv1.direction==2) {
+    if (surv1.direction==2) {//vers le bas
       fill(255, 0, 0, 150);
       triangle(surv1.x, surv1.y, surv1.x-100, surv1.y+200, surv1.x+100, surv1.y+200);
     }
-    if (surv1.direction==3) {
+    if (surv1.direction==3) {//vers la gauche
       fill(255, 0, 0, 150);
       triangle(surv1.x, surv1.y, surv1.x+200, surv1.y-100, surv1.x+200, surv1.y+100);
     }
-    if (surv1.direction==4) {
+    if (surv1.direction==4) {//vers la droite
       fill(255, 0, 0, 150);
       triangle(surv1.x, surv1.y, surv1.x-200, surv1.y-100, surv1.x-200, surv1.y+100);
     }
@@ -1238,14 +1536,14 @@ void niveau1() {
 
     //Jauge de triche
     for (int k=0; k<20; k++) {
-      if (tab1.get(k).x>perso.x-40 && tab1.get(k).x<perso.x+65 && tab1.get(k).y>perso.y-40 && tab1.get(k).y<perso.y+65 && espace==1 && k!=10) { 
+      if (tab1.get(k).x>perso.x-40 && tab1.get(k).x<perso.x+65 && tab1.get(k).y>perso.y-40 && tab1.get(k).y<perso.y+65 && espace==1 && k!=10) { //si le joueur n'est pas dans sa zone et qu'il n'essaye pas de tricher sur sa place
         tempseleve++;
         if (tab1.get(k).type !=5) {
-          tab3.get(k).xjauge=tab3.get(k).xjauge+0.5;
+          tab3.get(k).xjauge=tab3.get(k).xjauge+0.5;//quand le joueur triche sur un élève qui n'est pas un fayot la barre augmente de 0.5 en 0.5
         }
         if (tab1.get(k).type ==5) {
-          tab3.get(k).xjauge=tab3.get(k).xjauge+5;
-          image(point, tab3.get(k).x+12, tab3.get(k).y-50);
+          tab3.get(k).xjauge=tab3.get(k).xjauge+5;//quand l'élève triche sur un fayot la barre augmente de 5 en 5
+          image(point, tab3.get(k).x+12, tab3.get(k).y-50); //un point d'intérrogation est mis pour l'avertir
         }
       }
     }
@@ -1292,18 +1590,18 @@ void niveau1() {
     //Touche pour tricher 
     if (varenter3==1 && time <=300) {
       fill(255);
-      text("Veuillez atteindre plus longtemps pour utiliser cette capacité", 125, 680);
+      text("Veuillez atteindre plus longtemps pour utiliser cette capacité", 125, 680);//si on essaye de savoir les type de joueur alors qu'il sont encore afficher de base
     }
-    if (enter==1) {
-      if (time<=300) {
+    if (enter==1) {//quand on appuie sur a
+      if (time<=300) {//sui la première aide n'est pas fini on affiche lee message ci-dessus
         varenter3=1;
       }
-      if (time>300) {
+      if (time>300) {//quand la première aide est fini
         varenter=1;//On commence time2
         for (int k=0; k<20; k++) {
-          tab1.get(k).couleur2=tab1.get(k).couleur;
+          tab1.get(k).couleur2=tab1.get(k).couleur;//on stocke les couleur dans un paramètre de classe
 
-          if (time2<300) {
+          if (time2<300) {//on donne les vraie couleur au personnage
             if (tab1.get(k).type==2) tab1.get(k).couleur=color(255, 255, 0);
             if (tab1.get(k).type==3) tab1.get(k).couleur=color(0, 255, 0);
             if (tab1.get(k).type==4) tab1.get(k).couleur=color(255, 0, 0);
@@ -1311,14 +1609,14 @@ void niveau1() {
           }
         }
       }
-      enter=0;
+      enter=0;//on bloque la possibilité de réappuyer sur la touche a
     }
 
-    if (varenter==1) {
+    if (varenter==1) {//timer de la deuxième aide
       time2++;
     }
 
-    if (time2>300 && varenter2==0) {
+    if (time2>300 && varenter2==0) {//quand la deuxième est fini on remet les couleurs que l'on avait stocker
       for (int k=0; k<20; k++) {
         tab1.get(k).couleur=tab1.get(k).couleur2;
       }
@@ -1326,7 +1624,7 @@ void niveau1() {
     }
 
 
-    niveau1accueil=1;
+    niveau1accueil=1;//on passe cette varaible à un pour pouvoir réinitatilser les variables plus tard
     TempsSeconde=TempsSeconde-1;
     if (TempsSeconde==-50) {//Si temps descend en dessous de 0 alors on perd une minute et les secondes sont égales à 60
       TempsMinute--;
@@ -1367,16 +1665,16 @@ void niveau1() {
     }
   }// Fin du stop
 
-  if (score>=50) {
+  if (score>=50) {//si on gange
     gg=1;
     time3controle=1;
     cadenas=1;
-    page=5;
+    page=5;//image de win
     stop=1;
     musique=3;
     accueil.hide();
     stopmusic1();
-    if (time3>=100) {
+    if (time3>=100) {//on lance un temps d'attente
       page=5;
     }
   }
@@ -1392,46 +1690,46 @@ void niveau1() {
 
     time3controle=1;
     musique=2;
-    stop=1;
+    stop=1;//on stop le jeu
     perdu=1;
     accueil.hide();
     stopmusic1();
 
     if (time3>=100) {
-      page=4;
+      page=4;//fondu
     }
   }
 }
-void initialisation2() {
-  for (int i=0; i<8; i++) {
+void initialisation2() {//on initialise les variables
+  for (int i=0; i<8; i++) {//on initialise les tables
     for (int j=0; j<6; j++) {
       background(255);
 
-      tab5.add(new table2());
+      tab5.add(new table2());//on ajoute des tables dans la class
       tab5.get(t).x= 142+i*110;
       tab5.get(t).y= 110+j*100;
       t++;
     }
   }
-  for (int i=0; i<8; i++) {
+  for (int i=0; i<8; i++) {//on initialise les élèves
     for (int j=0; j<6; j++) {
       background(255);
 
-      tab4.add(new eleve2());
+      tab4.add(new eleve2());//on ajoute les élèves dans la class
       tab4.get(k).type=(int) random(2, 6);
       tab4.get(k).x= 172+i*110;
       tab4.get(k).y= 142+j*100;
-      if (tab4.get(k).type==2) tab4.get(k).couleur=color(255, 255, 0);
+      if (tab4.get(k).type==2) tab4.get(k).couleur=color(255, 255, 0);//on donne les couleur des élèves en fonction de leur type
       if (tab4.get(k).type==3) tab4.get(k).couleur=color(0, 255, 0);
       if (tab4.get(k).type==4) tab4.get(k).couleur=color(255, 0, 0);
       if (tab4.get(k).type==5) tab4.get(k).couleur=color(0, 0, 255);
       if (k==20) {
-        tab4.get(k).type=6;
+        tab4.get(k).type=6;//si un élève est a la 20ème place il n'apparaît pas c'est la place du joueur
       }
       k++;
     }
   }
-  for (int i=0; i<8; i++) {
+  for (int i=0; i<8; i++) {//on affiche les jauge de triche
     for (int j=0; j<6; j++) {
       background(255);
 
@@ -1444,6 +1742,8 @@ void initialisation2() {
   k=0;
   l=0;
   t=0;
+
+  //on établie les positions du personnage et du surveillant
   perso2.x=492;
   perso2.y=330;
   surv2.x=557;
@@ -1462,10 +1762,10 @@ void initialisation2() {
 
 
 
-void niveau2et3() {
+void niveau2et3() {//dans le niveau
   if (stop==0) {//Quand on perd stop passe a un et le niveau est figé
     if (niveaudeux==1) {
-      musique=1;
+      musique=5;
       stopmusic1();
       launchmusic();
     }
@@ -1474,26 +1774,29 @@ void niveau2et3() {
       stopmusic1();
       launchmusic();
     }
+    //les avancé fluides
     if (timerR==1) {
-      perso2.x = perso2.x+2;
+      perso2.x = perso2.x+2;//vers la droite
     }
     if (timerL==1) {
-      perso2.x = perso2.x-2;
+      perso2.x = perso2.x-2;//vers la gauche
     }
     if (timerU==1) {
-      perso2.y = perso2.y-2;
+      perso2.y = perso2.y-2;//vers le haut
     }
     if (timerD==1) {
-      perso2.y = perso2.y+2;
+      perso2.y = perso2.y+2;//vers le bas
     }
 
-    surveillantdetection();
+    surveillantdetection();//on met la void détection des surveillants
 
-
+    //on cache certain bouton
     precedent.hide();
     suivant.hide();
     start.hide();
     accueil.show();
+
+
     fill(rectcouleur);
     image(salle2, 0, 0);
     rect(1080, 0, 200, 720);
@@ -1531,7 +1834,7 @@ void niveau2et3() {
       }
     }
     for (int i=0; i<48; i++) {
-      if (tab6.get(i).time>=300 && tab6.get(i).xjauge2>0) {//Quand la jauge est resté x temps >0 et qu'elle est encore supérieur à 0 alors elle descend
+      if (tab6.get(i).time>=1200 && tab6.get(i).xjauge2>0) {//Quand la jauge est resté x temps >0 et qu'elle est encore supérieur à 0 alors elle descend
         tab6.get(i).xjauge2--;
         if (tab6.get(i).xjauge2==0) {//Quand elle redevient à 0
           tab6.get(i).time=0;//Le temps avant qu'elle redescende est mis à 0
@@ -1545,9 +1848,11 @@ void niveau2et3() {
 
 
     fill(255);
+    
     ellipse(surv2.x, surv2.y, 20, 20);//Surv2
     ellipse(surv3.x, surv3.y, 20, 20);//Surv3
-    if (niveautrois==1) {
+    
+    if (niveautrois==1) {//si c'est le niveau 3 on affiche deux surveillants en plus
       ellipse(surv4.x, surv4.y, 20, 20);//Surv2
       ellipse(surv5.x, surv5.y, 20, 20);//Surv3
     }
@@ -1683,59 +1988,49 @@ void niveau2et3() {
 
     police = loadFont("SansSerif-18.vlw");
     textFont(police);
-    if (timerphrase<=300) {//Intervalle entre chaque phrase
+    if (timerphrase<=300) {//la phrase doit être afficher 300 tours
       fill(255);
-      if (phrase==12) {
-        text(lines[phrase], surv2.x- (lines[phrase].length()/2)*9, surv2.y-40);
-        text(lines[phrase+1], surv2.x-lines[phrase].length()/2*9, surv2.y-20);
-      }
-      if (phrase==13) {
-        text(lines[phrase-1], surv2.x-(lines[phrase].length()/2)*9, surv2.y-40);
-        text(lines[phrase], surv2.x-(lines[phrase].length()/2)*9, surv2.y-20);
-      }
-      if (phrase !=12 && phrase != 13) {
-        text(lines[phrase], surv2.x-(lines[phrase].length()/2)*9, surv2.y-20);
-      }
+      text(lines[phrase], surv1.x-(lines[phrase].length()/2)*9, surv1.y-20);
       timerphrase++;
-    } else {//Si l'intervalle est dépassé on peut remettre une autre phrase
+    } else {
       phrase=(int)random(0, lines.length);
       timerphrase=0;
     }
-  }//Fin du stop
-  if (time3controle==1) {
-    time3++;
-  }
-  if (score>=50) {
-    gg=1;
-    time3controle=1;
+}//Fin du stop
+if (time3controle==1) {
+  time3++;
+}
+if (score>=50) {//si on gagne
+  gg=1;
+  time3controle=1;
+  page=5;
+  stop=1;
+  musique=3;
+  cadenas++;
+  accueil.hide();
+  stopmusic1();
+  if (time3>=100) {
     page=5;
-    stop=1;
-    musique=3;
-    cadenas++;
-    accueil.hide();
-    stopmusic1();
-    if (time3>=100) {
-      page=5;
-    }
-  }
-  if (score<0) {
-    score=0;
-  }
-  if (nul==1) {
-
-    time3controle=1;
-    musique=2;
-    stop=1;
-    perdu=1;
-    accueil.hide();
-    stopmusic1();
-
-    if (time3>=100) {
-      page=4;
-    }
   }
 }
-void surveillantdetection() {
+if (score<0) {
+  score=0;
+}
+if (nul==1) {//si on perd
+
+  time3controle=1;
+  musique=2;
+  stop=1;
+  perdu=1;
+  accueil.hide();
+  stopmusic1();
+
+  if (time3>=100) {
+    page=4;
+  }
+}
+}
+void surveillantdetection() {//détection et déplacement des surveillants 2 3 4 et 5, même principe que pour le surv1 voir détails dans void niveau 1 pour les commentaires
   //Détection surv2
   pushStyle();
   fill(0, 220, 200);
